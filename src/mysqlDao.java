@@ -141,7 +141,7 @@ public class mysqlDao {
                 "password VARCHAR(100), " +
                 "PRIMARY KEY (aid));";
         stat.executeUpdate(query);
-        System.out.println("++ created table: users");
+        System.out.println("++ created table: accounts");
     }
     private void createListingTable() throws SQLException {
         String amenities = "'Luggage drop-off allowed', 'Kitchen', 'Free washer – In building', 'Hair dryer', " +
@@ -178,13 +178,6 @@ public class mysqlDao {
         stat.executeUpdate(query);
         System.out.println("++ created table: renters");
     }
-    private void editPayment(int rid, String method, int card_num, String expire, int cvv) throws SQLException {
-        Statement stat = conn.createStatement();
-        String query = " UPDATE renters set method='%s', card_num=%d, expire='%s', cvv='%d'where rid=%d";
-        query = String.format(query, method,card_num,expire,cvv,rid);
-        stat.executeUpdate(query);
-        System.out.println("++ edit payment rid:" + rid);
-    }
 
     private void createCalendarTable() throws SQLException {
         Statement stat = conn.createStatement();
@@ -215,6 +208,7 @@ public class mysqlDao {
         stat.executeUpdate(query);
         System.out.println("++ created table: bookings");
     }
+
     public void register(String email, String psw) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "INSERT INTO accounts " +
@@ -225,6 +219,15 @@ public class mysqlDao {
         stat.executeUpdate(query);
         System.out.println("++ register email: "+ email);
     }
+
+    private void editPayment(int rid, String method, int card_num, String expire, int cvv) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = " UPDATE renters set method='%s', card_num=%d, expire='%s', cvv='%d'where rid=%d";
+        query = String.format(query, method,card_num,expire,cvv,rid);
+        stat.executeUpdate(query);
+        System.out.println("++ edit payment rid:" + rid);
+    }
+
     public void insertUser(int aid, String name, String addr, String date, String occup, int sin) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "INSERT INTO users " +

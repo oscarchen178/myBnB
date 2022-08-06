@@ -43,5 +43,6 @@ public class operation {
 
     public void cancelBook(int bid) {
         // update booking status to canceled, get lid, start, end using bid, update available
+
     }
 }
