@@ -54,8 +54,10 @@ public class mysqlDao {
         stat.executeUpdate(query);
         System.out.println("++ created table: users");
     }
+
     private void createListingTable() throws SQLException {
         Statement stat = conn.createStatement();
+
         String query ="CREATE TABLE listings(oid INT, " +
                 "Type ENUM('full house','apartment','room'), " +
                 "latitude FLOAT(15) DEFAULT 0, " +
@@ -66,19 +68,28 @@ public class mysqlDao {
                 " `Price` FLOAT(10) UNSIGNED," +
                 " foreign key (oid) references users(uid));";
                  stat.executeUpdate(query);
+
         System.out.println("++ created table: listings");
     }
+
     private void createHostsTable() throws SQLException {
         Statement stat = conn.createStatement();
-        String query ="CREATE TABLE hosts(hid INT," +
-                " history TEXT, " +
+
+        String query ="CREATE TABLE hosts(" +
+                "hid INT, " +
+                "history TEXT, " +
+
                 "foreign key (hid) references users(uid));";
         stat.executeUpdate(query);
         System.out.println("++ created table: hosts");
     }
+
     private void createRentersTable() throws SQLException {
         Statement stat = conn.createStatement();
-        String query ="CREATE TABLE renters(rid INT,payment_info INT(16), " +
+
+        String query ="CREATE TABLE renters(" +
+                "rid INT, " +
+                "payment_info INT(16), " +
                 "history TEXT, " +
                 "foreign key (rid) references users(uid));";
         stat.executeUpdate(query);
