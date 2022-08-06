@@ -17,13 +17,12 @@ public class mysqlDao {
 
     }
 
-    public void resetDB() throws SQLException {
-        // drop current tables
+    public void dropAllTables() throws SQLException {
         Statement dropTables = conn.createStatement();
         String query1 = "DROP TABLE IF EXISTS ";
         String query2 = "users";
         String query3 = "listings";
-    //    String query4 = "hosts";
+//        String query4 = "hosts";
         String query5 = "renters";
         String query6 = "bookings";
         String query7 = "calendars";
@@ -31,19 +30,19 @@ public class mysqlDao {
         String query9 = "renter_comments";
         String query10 = "host_comments";
         dropTables.executeUpdate(query1+query10);
-
         dropTables.executeUpdate(query1+query9);
-
         dropTables.executeUpdate(query1+query8);
-
         dropTables.executeUpdate(query1+query7);
-
         dropTables.executeUpdate(query1+query6);
         dropTables.executeUpdate(query1+query5);
-
+//        dropTables.executeUpdate(query1+query4);
         dropTables.executeUpdate(query1+query3);
         dropTables.executeUpdate(query1+query2);
+    }
 
+    public void resetDB() throws SQLException {
+        // drop current tables
+        dropAllTables();
         System.out.println("dropped tables !");
         // create new tables
         createUserTable();
@@ -54,48 +53,59 @@ public class mysqlDao {
         createListingCommentTable();
         createHostCommentTable();
         createBookingsTable();
+        System.out.println("Tables create complete ~");
         // insert some data
         insertUser("Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
-        insertListing("full house", "33.33", "22.22", "1809 - 50 brian harrison", "fdfd", "2022-08-24", 299);
-
-       // insertRenter(1, "fjdijeeeeenn", 39472074);
+        insertListing(1, "full house", "33.33", "22.22", "1809, 50 brian harrison",
+                "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
+        insertRenter(1, "credit", 88888888, "25/07", 183);
+        insertCalender(1, "2022-8-12", 200, "true");
+        insertCalender(1, "2022-8-13", 200, "true");
+        insertBooking(1, 1, "2022-7-6", "2022-7-11", "booked");
+        insertListingComment(1, 1, "Hello", "1");
+        insertRenterComment(1, 1, "Hello", "1");
+        insertHostComment(1, 1, "Hello", "1");
     }
+
     private void createListingCommentTable() throws SQLException {
         Statement stat = conn.createStatement();
         String query = "CREATE TABLE listing_comments(" +
-                "rid INT," +
-                "lid INT," +
-                "comment VARCHAR(100), " +
-                "rate INT," +
-                "foreign key (lid) references listings(lid)," +
+                "rid INT, " +
+                "lid INT, " +
+                "comment TEXT, " +
+                "rate ENUM('1', '2', '3', '4', '5'), " +
+                "foreign key (lid) references listings(lid), " +
                 "foreign key (rid) references renters(rid));";
         stat.executeUpdate(query);
         System.out.println("++ created table: listing_comments");
     }
+
     private void createRenterCommentTable() throws SQLException {
         Statement stat = conn.createStatement();
         String query = "CREATE TABLE renter_comments(" +
-                "rid INT," +
-                "hid INT," +
-                "comment VARCHAR(100), " +
-                "rate INT," +
-                "foreign key (hid) references users(uid)," +
+                "hid INT, " +
+                "rid INT, " +
+                "comment TEXT, " +
+                "rate ENUM('1', '2', '3', '4', '5'), " +
+                "foreign key (hid) references users(uid), " +
                 "foreign key (rid) references renters(rid));";
         stat.executeUpdate(query);
-        System.out.println("++ created table: listing_comments");
+        System.out.println("++ created table: renter_comments");
     }
+
     private void createHostCommentTable() throws SQLException {
         Statement stat = conn.createStatement();
         String query = "CREATE TABLE host_comments(" +
-                "rid INT," +
-                "hid INT," +
-                "comment VARCHAR(100), " +
-                "rate INT," +
-                "foreign key (hid) references users(uid)," +
+                "rid INT, " +
+                "hid INT, " +
+                "comment TEXT, " +
+                "rate ENUM('1', '2', '3', '4', '5'), " +
+                "foreign key (hid) references users(uid), " +
                 "foreign key (rid) references renters(rid));";
         stat.executeUpdate(query);
-        System.out.println("++ created table: listing_comments");
+        System.out.println("++ created table: host_comments");
     }
+
     private void createUserTable() throws SQLException {
         Statement stat = conn.createStatement();
         String query = "CREATE TABLE users(" +
@@ -111,21 +121,25 @@ public class mysqlDao {
     }
 
     private void createListingTable() throws SQLException {
-        Statement stat = conn.createStatement();
+        String amenities = "'Luggage drop-off allowed', 'Kitchen', 'Free washer – In building', 'Hair dryer', " +
+                "'Shampoo', 'Ethernet connection', 'Air conditioning', 'Indoor fireplace: gas', " +
+                "'Security cameras on property', 'Dishwasher', 'Barbecue utensils'";
 
-        String query ="CREATE TABLE listings(oid INT, " +
-                "Type ENUM('full house','apartment','room'), " +
+        Statement stat = conn.createStatement();
+        String query ="CREATE TABLE listings(" +
+                "lid INT NOT NULL AUTO_INCREMENT, " +
+                "oid INT, " +
+                "type ENUM('full house','apartment','room'), " +
                 "latitude FLOAT(15) DEFAULT 0, " +
                 "longitude FLOAT(15) DEFAULT 0, " +
-                "Address VARCHAR(50), " +
-                "Characteristics VARCHAR(20), " +
-                "Calender_Availability DATE, " +
-                "Price FLOAT(10) UNSIGNED, " +
-                "lid INT NOT NULL AUTO_INCREMENT, " +
+                "address VARCHAR(50), " +
+                "city VARCHAR(20), " +
+                "country VARCHAR(20), " +
+                "postal_code VARCHAR(10), " +
+                "characteristics SET(" + amenities + "), " +
                 "PRIMARY KEY (lid), " +
                 "foreign key (oid) references users(uid));";
-                 stat.executeUpdate(query);
-
+        stat.executeUpdate(query);
         System.out.println("++ created table: listings");
     }
 
@@ -142,25 +156,23 @@ public class mysqlDao {
 
     private void createRentersTable() throws SQLException {
         Statement stat = conn.createStatement();
-
         String query ="CREATE TABLE renters(" +
-                "rid INT," +
-                "method ENUM('debit','credit')," +
+                "rid INT NOT NULL," +
+                "method ENUM('debit','credit'), " +
                 "card_num INT(16), " +
                 "expire VARCHAR(5), " +
-                "cvv INT(3)," +
+                "cvv INT(3), " +
                 "foreign key (rid) references users(uid));";
         stat.executeUpdate(query);
         System.out.println("++ created table: renters");
     }
     private void createCalendarTable() throws SQLException {
         Statement stat = conn.createStatement();
-
-        String query ="CREATE TABLE Calendars(" +
-                "lid INT," +
-                "date DATE," +
-                "price INT(5), " +
-                "available BOOL," +
+        String query ="CREATE TABLE calendars(" +
+                "lid INT NOT NULL, " +
+                "date DATE NOT NULL, " +
+                "price INT(5) NOT NULL, " +
+                "available BOOL DEFAULT false, " +
                 "foreign key (lid) references listings(lid));";
         stat.executeUpdate(query);
         System.out.println("++ created table: calenders");
@@ -169,18 +181,21 @@ public class mysqlDao {
         Statement stat = conn.createStatement();
 
         String query ="CREATE TABLE bookings(" +
-                "rid INT, " +
-                "hid INT, " +
-                "lid INT, " +
-                "startdate DATE," +
-                "enddate Date," +
-                "status ENUM('done','ongoing','booked','canceled')," +
-                "foreign key (rid) references renters(rid)," +
-                "foreign key (hid) references users(uid)," +
-                "foreign key (lid) references listings(lid));";
+                "bid INT NOT NULL AUTO_INCREMENT" +
+                "rid INT NOT NULL, " +
+//                "hid INT NOT NULL, " +
+                "lid INT NOT NULL, " +
+                "start DATE NOT NULL, " +
+                "end DATE NOT NULL, " +
+                "status ENUM('done','ongoing','booked','canceled') DEFAULT 'booked', " +
+                "foreign key (rid) references renters(rid), " +
+//                "foreign key (hid) references users(uid), " +
+                "foreign key (lid) references listings(lid), " +
+                "PRIMARY KEY (bid));";
         stat.executeUpdate(query);
         System.out.println("++ created table: bookings");
     }
+
     public void insertUser(String name, String addr, String date, String occup, int sin) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "INSERT INTO users " +
@@ -191,16 +206,19 @@ public class mysqlDao {
         stat.executeUpdate(query);
         System.out.println("++ inserted user: "+name);
     }
-    public void insertListing(String type, String latitude, String longitude, String Address, String Characteristics, String Calendar,float Price) throws SQLException {
+
+    public void insertListing(int oid, String type, String latitude, String longitude, String address,
+                              String city, String country, String postal_code, String characteristics) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "INSERT INTO listings " +
-                "(Type, latitude, longitude, Address, Characteristics, Calender_Availability, Price) " +
+                "(oid, type, latitude, longitude, address, city, country, postal_code, characteristics) " +
                 "VALUES " +
-                "('%s', '%s', '%s', '%s', '%s', '%s', '%f')";
-        query = String.format(query, type, latitude, longitude,Address, Characteristics, Calendar, Price);
+                "(%s, '%s', %s, %s, '%s', '%s', '%s', '%s', %s)";
+        query = String.format(query, oid, type, latitude, longitude, address, city, country, postal_code, characteristics);
         stat.executeUpdate(query);
-        System.out.println("++ inserted user: "+Address);
+        System.out.println("++ inserted listing: "+address);
     }
+
 //    public void insertHost(int hid, String history) throws SQLException {
 //        Statement stat = conn.createStatement();
 //        String query = "INSERT INTO hosts " +
@@ -211,14 +229,95 @@ public class mysqlDao {
 //        stat.executeUpdate(query);
 //        System.out.println("++ inserted host: "+hid);
 //    }
-    public void insertRenter(int hid, String history, int payment_info) throws SQLException {
+
+    public void insertRenter(int hid, String method, int card_num, String expire, int cvv) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "INSERT INTO renters " +
-                "(rid, history, payment_info) " +
+                "(rid, method, card_num, expire, cvv) " +
                 "VALUES " +
-                "('%d', '%s', '%d')";
-        query = String.format(query, hid, history, payment_info);
+                "(%d, '%s', %d, '%s', %d)";
+        query = String.format(query, hid, method, card_num, expire, cvv);
         stat.executeUpdate(query);
         System.out.println("++ inserted host: "+hid);
+    }
+
+    public void insertCalender(int lid, String date, int price, String available) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "INSERT INTO calendars " +
+                "(lid, date, price, available) " +
+                "VALUES " +
+                "(%d, '%s', %d, %s)";
+        query = String.format(query, lid, date, price, available);
+        stat.executeUpdate(query);
+        System.out.println("++ inserted calender: " + lid + " " + date);
+    }
+
+    public void insertBooking(int rid, int lid, String start, String end, String status) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "INSERT INTO bookings " +
+                "(rid, lid, start, end, status) " +
+                "VALUES " +
+                "(%d, %d, '%s', '%s', '%s')";
+        query = String.format(query, rid, lid, start, end, status);
+        stat.executeUpdate(query);
+        System.out.println("++ inserted booking: " + rid + " " + lid);
+    }
+
+    public void insertListingComment(int rid, int lid, String comment, String rate) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "INSERT INTO listing_comments " +
+                "(rid, lid, comment, rate) " +
+                "VALUES " +
+                "(%d, %d, '%s', '%s')";
+        query = String.format(query, rid, lid, comment, rate);
+        stat.executeUpdate(query);
+        System.out.println("++ inserted listing comment: " + rid + "->" + lid + " " + comment);
+    }
+
+    public void insertRenterComment(int hid, int rid, String comment, String rate) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "INSERT INTO renter_comments " +
+                "(hid, rid, comment, rate) " +
+                "VALUES " +
+                "(%d, %d, '%s', '%s')";
+        query = String.format(query, hid, rid, comment, rate);
+        stat.executeUpdate(query);
+        System.out.println("++ inserted renter comment: " + hid + "->" + rid + " " + comment);
+    }
+
+    public void insertHostComment(int rid, int hid, String comment, String rate) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "INSERT INTO host_comments " +
+                "(rid, hid, comment, rate) " +
+                "VALUES " +
+                "(%d, %d, '%s', '%s')";
+        query = String.format(query, rid, hid, comment, rate);
+        stat.executeUpdate(query);
+        System.out.println("++ inserted host comment: " + rid + "->" + hid + " " + comment);
+    }
+
+    public boolean checkBookAvailable(int lid, String start, String end, long length) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT count(*) AS COUNT FROM calendars " +
+                "WHERE lid=%d AND available=true AND DATE(date) " +
+                "BETWEEN '%s' AND '%s'";
+        query = String.format(query, lid, start, end);
+        ResultSet res = stat.executeQuery(query);
+        if (res.next()) {
+            long count = res.getLong("COUNT");
+//            System.out.println("count: " + count);
+            return count == length;
+        }
+        return false;
+    }
+
+    public void updateAvailable(int lid, String start, String end, String available) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "UPDATE calendars " +
+                "SET available=%s " +
+                "WHERE lid=%d AND available=true AND DATE(date) " +
+                "BETWEEN '%s' AND '%s'";
+        query = String.format(query, available, lid, start, end);
+        stat.executeUpdate(query);
     }
 }
