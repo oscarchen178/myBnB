@@ -38,12 +38,15 @@ public class mysqlDao {
 //        dropTables.executeUpdate(query1+query4);
         dropTables.executeUpdate(query1+query3);
         dropTables.executeUpdate(query1+query2);
+        dropTables.executeUpdate("DROP TABLE IF EXISTS accounts");
+
     }
 
     public void resetDB() throws SQLException {
         // drop current tables
         dropAllTables();
         System.out.println("dropped tables !");
+        createAccountTable();
         // create new tables
         createUserTable();
         createListingTable();
@@ -55,7 +58,8 @@ public class mysqlDao {
         createBookingsTable();
         System.out.println("Tables create complete ~");
         // insert some data
-        insertUser("Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
+        register("aaa@mail.com", "123456");
+        insertUser(1,"Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
         insertListing(1, "full house", "33.33", "22.22", "1809, 50 brian harrison",
                 "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
         insertRenter(1, "credit", 88888888, "25/07", 183);
@@ -65,6 +69,8 @@ public class mysqlDao {
         insertListingComment(1, 1, "Hello", "1");
         insertRenterComment(1, 1, "Hello", "1");
         insertHostComment(1, 1, "Hello", "1");
+        editUserProfile(1, "qiqiqiqiqiqi", "wenzhou", "1997-01-01", "musician", 193382);
+        editPayment(1,"credit", 38838,"11/28", 123);
     }
 
     private void createListingCommentTable() throws SQLException {
@@ -109,17 +115,34 @@ public class mysqlDao {
     private void createUserTable() throws SQLException {
         Statement stat = conn.createStatement();
         String query = "CREATE TABLE users(" +
-                "uid INT NOT NULL AUTO_INCREMENT, " +
+                "uid INT, " +
                 "name VARCHAR(30) NOT NULL, " +
                 "address VARCHAR(100), " +
                 "birthday DATE, " +
                 "occupation VARCHAR(30), " +
                 "sin INT, " +
-                "PRIMARY KEY (uid));";
+                "foreign key (uid) references accounts(aid));";
         stat.executeUpdate(query);
         System.out.println("++ created table: users");
     }
+    private void editUserProfile(int uid, String name, String address, String birthday, String occu, int sin) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = " UPDATE users set name='%s', address='%s', birthday='%s', occupation='%s', sin=%d where uid=%d";
+        query = String.format(query, name,address,birthday,occu,sin, uid);
+        stat.executeUpdate(query);
+        System.out.println("++ edit profile uid:" + uid);
+    }
 
+    private void createAccountTable() throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "CREATE TABLE accounts(" +
+                "aid INT NOT NULL AUTO_INCREMENT, " +
+                "email VARCHAR(30) NOT NULL, " +
+                "password VARCHAR(100), " +
+                "PRIMARY KEY (aid));";
+        stat.executeUpdate(query);
+        System.out.println("++ created table: users");
+    }
     private void createListingTable() throws SQLException {
         String amenities = "'Luggage drop-off allowed', 'Kitchen', 'Free washer – In building', 'Hair dryer', " +
                 "'Shampoo', 'Ethernet connection', 'Air conditioning', 'Indoor fireplace: gas', " +
@@ -143,17 +166,6 @@ public class mysqlDao {
         System.out.println("++ created table: listings");
     }
 
-//    private void createHostsTable() throws SQLException {
-//        Statement stat = conn.createStatement();
-//
-//        String query ="CREATE TABLE hosts(" +
-//                "hid INT, " +
-//                "history TEXT, " +
-//                "foreign key (hid) references users(uid));";
-//        stat.executeUpdate(query);
-//        System.out.println("++ created table: hosts");
-//    }
-
     private void createRentersTable() throws SQLException {
         Statement stat = conn.createStatement();
         String query ="CREATE TABLE renters(" +
@@ -166,6 +178,14 @@ public class mysqlDao {
         stat.executeUpdate(query);
         System.out.println("++ created table: renters");
     }
+    private void editPayment(int rid, String method, int card_num, String expire, int cvv) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = " UPDATE renters set method='%s', card_num=%d, expire='%s', cvv='%d'where rid=%d";
+        query = String.format(query, method,card_num,expire,cvv,rid);
+        stat.executeUpdate(query);
+        System.out.println("++ edit payment rid:" + rid);
+    }
+
     private void createCalendarTable() throws SQLException {
         Statement stat = conn.createStatement();
         String query ="CREATE TABLE calendars(" +
@@ -181,7 +201,7 @@ public class mysqlDao {
         Statement stat = conn.createStatement();
 
         String query ="CREATE TABLE bookings(" +
-                "bid INT NOT NULL AUTO_INCREMENT" +
+                "bid INT NOT NULL AUTO_INCREMENT," +
                 "rid INT NOT NULL, " +
 //                "hid INT NOT NULL, " +
                 "lid INT NOT NULL, " +
@@ -195,14 +215,23 @@ public class mysqlDao {
         stat.executeUpdate(query);
         System.out.println("++ created table: bookings");
     }
-
-    public void insertUser(String name, String addr, String date, String occup, int sin) throws SQLException {
+    public void register(String email, String psw) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "INSERT INTO accounts " +
+                "(email, password) " +
+                "VALUES " +
+                "('%s', '%s')";
+        query = String.format(query, email, psw);
+        stat.executeUpdate(query);
+        System.out.println("++ register email: "+ email);
+    }
+    public void insertUser(int aid, String name, String addr, String date, String occup, int sin) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "INSERT INTO users " +
-                "(name, address, birthday, occupation, sin) " +
+                "(uid, name, address, birthday, occupation, sin) " +
                 "VALUES " +
-                "('%s', '%s', '%s', '%s', %d)";
-        query = String.format(query, name, addr, date, occup, sin);
+                "(%d, '%s', '%s', '%s', '%s', %d)";
+        query = String.format(query, aid, name, addr, date, occup, sin);
         stat.executeUpdate(query);
         System.out.println("++ inserted user: "+name);
     }
@@ -219,16 +248,7 @@ public class mysqlDao {
         System.out.println("++ inserted listing: "+address);
     }
 
-//    public void insertHost(int hid, String history) throws SQLException {
-//        Statement stat = conn.createStatement();
-//        String query = "INSERT INTO hosts " +
-//                "(hid, history) " +
-//                "VALUES " +
-//                "('%d', '%s')";
-//        query = String.format(query, hid, history);
-//        stat.executeUpdate(query);
-//        System.out.println("++ inserted host: "+hid);
-//    }
+
 
     public void insertRenter(int hid, String method, int card_num, String expire, int cvv) throws SQLException {
         Statement stat = conn.createStatement();
