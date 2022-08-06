@@ -38,6 +38,8 @@ public class mysqlDao {
         // insert some data
         insertUser("Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
         insertListing("full house", "33.33", "22.22", "1809 - 50 brian harrison", "fdfd", "2022-08-24", 299);
+        insertHost(1,"fdjijfdijfdijf");
+        insertRenter(1, "fjdijeeeeenn", 39472074);
     }
     private void createUserTable() throws SQLException {
         Statement stat = conn.createStatement();
@@ -119,14 +121,14 @@ public class mysqlDao {
         stat.executeUpdate(query);
         System.out.println("++ inserted host: "+hid);
     }
-//    public void insertRenter(String type, String latitude, String longitude, String Address, String Characteristics, String Calendar,float Price) throws SQLException {
-//        Statement stat = conn.createStatement();
-//        String query = "INSERT INTO listings " +
-//                "(Type, latitude, longitude, Address, Characteristics, Calender_Availability, Price) " +
-//                "VALUES " +
-//                "('%s', '%s', '%s', '%s', '%s', '%s', '%f')";
-//        query = String.format(query, type, latitude, longitude,Address, Characteristics, Calendar, Price);
-//        stat.executeUpdate(query);
-//        System.out.println("++ inserted user: "+Address);
-//    }
+    public void insertRenter(int hid, String history, int payment_info) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "INSERT INTO renters " +
+                "(rid, history, payment_info) " +
+                "VALUES " +
+                "('%d', '%s', '%d')";
+        query = String.format(query, hid, history, payment_info);
+        stat.executeUpdate(query);
+        System.out.println("++ inserted host: "+hid);
+    }
 }
