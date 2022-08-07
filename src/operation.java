@@ -79,7 +79,7 @@ public class operation {
     }
     public void register(String email, String psw) {
         try {
-            dao.register(email, psw);
+            dao.insertAccount(email, psw);
       //      System.out.println("register:"+email +",:" +psw);
         } catch (Exception e) {
             e.printStackTrace();

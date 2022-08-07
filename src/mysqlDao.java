@@ -55,7 +55,7 @@ public class mysqlDao {
         createBookingsTable();
         System.out.println("Tables create complete ~");
         // insert some data
-        register("aaa@mail.com", "123456");
+        insertAccount("aaa@mail.com", "123456");
         insertUser(1,"Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
         insertListing(1, "full house", "33.33", "22.22", "1809, 50 brian harrison",
                 "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
@@ -214,7 +214,7 @@ public class mysqlDao {
         System.out.println("++ created table: bookings");
     }
 
-    public void register(String email, String psw) throws SQLException {
+    public void insertAccount(String email, String psw) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "INSERT INTO accounts " +
                 "(email, password) " +
