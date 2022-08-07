@@ -239,7 +239,12 @@ public class cmdHandler {
     public void booklisting() {
         String filter;
         System.out.println("Find A Listing then Book ~");
-        System.out.println("1, Filter with latitude & longitude");
+        System.out.println("Filters");
+        System.out.println("1, latitude & longitude");
+        System.out.println("2, postal code");
+        System.out.println("3, price range");
+        System.out.println("4, date range");
+
     }
 
     public void managebooking() {

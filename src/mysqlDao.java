@@ -1,7 +1,8 @@
 import java.sql.*;
 
 public class mysqlDao {
-    private static final String dbURL = "jdbc:mysql://localhost:3306/mydb";
+    private static final String dbURL = "jdbc:mysql://localhost:3306/mydb?allowLoadLocalInfile=true&SslMode=VerifyCA&SslMode=VerifyFull";
+    // &SslMode=VerifyCA&SslMode=VerifyFull
     private Connection conn;
 
     public mysqlDao() {
@@ -56,49 +57,62 @@ public class mysqlDao {
         createBookingsTable();
         System.out.println("Tables create complete ~");
         // insert some data
-
-        insertAccount("mail", "1111");
-        insertUser(1,"Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
-        insertRenter(1);
-
-        insertAccount("mail2", "2222");
-        insertUser(2,"Jason", "51 Brian Harrison", "2001-2-27", "student", 666666);
-        insertRenter(2);
-
-        insertListing(1, "full house", "33.33", "22.22", "1809, 50 brian harrison",
-                "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
-        insertListing(2, "room", "33.33", "22.22", "1809, 50 brian harrison",
-                "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
+        pushData();
+//        insertAccount("mail", "1111");
+//        insertUser(1,"Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
+//        insertRenter(1);
+//
+//        insertAccount("mail2", "2222");
+//        insertUser(2,"Jason", "51 Brian Harrison", "2001-2-27", "student", 666666);
+//        insertRenter(2);
+//
+//        insertListing(1, "full house", "33.33", "22.22", "1809, 50 brian harrison",
+//                "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
+//        insertListing(2, "room", "33.33", "22.22", "1809, 50 brian harrison",
+//                "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
 //        insertRenter(1, "credit", 88888888, "25/07", 183);
-        insertCalender(1, "2022-8-12", 180, "true");
+//        insertCalender(1, "2022-8-12", 180, "true");
 //        insertCalender(1, "2022-8-13", 200, "true");
-        insertBooking(1, 1, "2022-7-6", "2022-7-11", "done");
-        insertBooking(2, 1, "2023-7-11", "2023-7-11", "booked");
-        insertBooking(2, 1, "2025-7-6", "2025-7-11", "booked");
-        insertBooking(1, 2, "2022-8-6", "2022-8-11", "booked");
+//        insertBooking(1, 1, "2022-7-6", "2022-7-11", "done");
+//        insertBooking(2, 1, "2023-7-11", "2023-7-11", "booked");
+//        insertBooking(2, 1, "2025-7-6", "2025-7-11", "booked");
+//        insertBooking(1, 2, "2022-8-6", "2022-8-11", "booked");
 //        insertListingComment(1, 1, "Hello", "1");
 //        insertRenterComment(1, 1, "Hello", "1");
 //        insertHostComment(1, 1, "Hello", "1");
 //        editUserProfile(1, "qiqiqiqiqiqi", "wenzhou", "1997-01-01", "musician", 193382);
 //        editPayment(1,"credit", 38838,"11/28", 123);
-        listingsRankByCountry("Canada");
-        listingsRankByCity("Canada", "Scarborough");
-        getListingsNumberCountry("Canada");
-        listingsOwnerMoreThanTenPersentByCountry("Canada");
-        rentersRankByPeriod("2017-01-01", "2030-01-01");
+//        listingsRankByCountry("Canada");
+//        listingsRankByCity("Canada", "Scarborough");
+//        getListingsNumberCountry("Canada");
+//        listingsOwnerMoreThanTenPersentByCountry("Canada");
+//        rentersRankByPeriod("2017-01-01", "2030-01-01");
 
     }
-//    public void pushData() throws SQLException {
-//        Statement stat = conn.createStatement();
-//        String query = "LOAD DATA INFILE 'C:\\github\\myBnB\\src\\listings.csv'" +
-//                "INTO TABLE listings" +
-//                "FIELDS TERMINATED BY ',' " +
-//                "ENCLOSED BY '\"'" +
-//                "LINES TERMINATED BY '\\n'" +
-//                "IGNORE 1 ROWS;";
-//        stat.executeUpdate(query);
-//        System.out.println("pushdata");
-//    }
+    public void pushData() throws SQLException {
+        Statement stat = conn.createStatement();
+        String[] arr = new String[9];
+        arr[0] = "accounts";
+        arr[1] = "users";
+        arr[2] = "renters";
+        arr[3] = "listings";
+        arr[4] = "bookings";
+        arr[5] = "calendars";
+        arr[6] = "renter_comments";
+        arr[7] = "host_comments";
+        arr[8] = "listing_comments";
+        for (String fname: arr) {
+            String query = "LOAD DATA LOCAL INFILE 'src/"+fname+".csv' " +
+                    "INTO TABLE "+fname+" " +
+                    "FIELDS TERMINATED BY ',' " +
+                    "ENCLOSED BY '\"' " +
+                    "LINES TERMINATED BY '\\n' " +
+                    "IGNORE 1 ROWS;";
+            stat.executeUpdate(query);
+            System.out.println("push "+fname+" data");
+        }
+    }
+
     private void createListingCommentTable() throws SQLException {
         Statement stat = conn.createStatement();
         String query = "CREATE TABLE listing_comments(" +
