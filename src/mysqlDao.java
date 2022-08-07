@@ -404,6 +404,37 @@ public class mysqlDao {
         query = String.format(query, lid);
         stat.executeUpdate(query);
     }
+    public int getBookingsNumberCityPeriod(String start, String end, String city) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT COUNT(*) AS COUNT FROM bookings natural join listings " +
+                "where Date(start) between '%s' and '%s' "+
+               "and" +
+                " Date(end) between '%s' and '%s'" +
+                " and city='%s'";
+        query = String.format(query,start, end, start, end, city);
+        ResultSet rs = stat.executeQuery(query);
+
+        if(rs.next()){
+            System.out.println(rs.getInt("COUNT"));
+        }
+        return rs.getInt("COUNT");
+    }
+    public int getBookingsNumberCityPostal(String start, String end, String city, String postal_code) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT COUNT(*) AS COUNT FROM bookings natural join listings " +
+                "where Date(start) between '%s' and '%s' "+
+                "and" +
+                " Date(end) between '%s' and '%s'" +
+                " and city='%s'" +
+                " and postal_code='%s'";
+        query = String.format(query,start, end, start, end, city,postal_code);
+        ResultSet rs = stat.executeQuery(query);
+
+        if(rs.next()){
+            System.out.println(rs.getInt("COUNT"));
+        }
+        return rs.getInt("COUNT");
+    }
     public int getListingsNumberCountry(String country) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "SELECT COUNT(*) AS COUNT FROM listings where country='%s'";

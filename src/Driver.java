@@ -11,6 +11,7 @@ public class Driver {
             dao.resetDB();
 
             operation op = new operation(dao);
+     //       dao.insertCalender(1, "2000-01-01", 193, "true");
             op.book(1,1,"2022-8-12", "2022-8-13");
             op.book(1,1,"2022-8-12", "2022-8-12");
             op.book(1,2,"2022-9-12", "2022-9-13");
@@ -29,6 +30,9 @@ public class Driver {
             dao.rentersRankByPeriodAndCity("2000-01-01", "2100-01-10", "Scarborough");
             dao.rentersLargestCanceled();
             dao.hostsLargestCanceled();
+            dao.getBookingsNumberCityPeriod("2000-01-01","2030-11-11", "Scarborough");
+            dao.getBookingsNumberCityPostal("2000-01-01","2030-11-11", "Scarborough","M2P 6J4");
+
         } catch (Exception e) {
             System.out.println(e);
         }
