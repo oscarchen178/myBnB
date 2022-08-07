@@ -47,6 +47,7 @@ public class mysqlDao {
         // create new tables
         createUserTable();
         createListingTable();
+  //      pushData();
         createCalendarTable();
         createRentersTable();
         createRenterCommentTable();
@@ -69,7 +70,17 @@ public class mysqlDao {
         editUserProfile(1, "qiqiqiqiqiqi", "wenzhou", "1997-01-01", "musician", 193382);
         editPayment(1,"credit", 38838,"11/28", 123);
     }
-
+//    public void pushData() throws SQLException {
+//        Statement stat = conn.createStatement();
+//        String query = "LOAD DATA INFILE 'C:\\github\\myBnB\\src\\listings.csv'" +
+//                "INTO TABLE listings" +
+//                "FIELDS TERMINATED BY ',' " +
+//                "ENCLOSED BY '\"'" +
+//                "LINES TERMINATED BY '\\n'" +
+//                "IGNORE 1 ROWS;";
+//        stat.executeUpdate(query);
+//        System.out.println("pushdata");
+//    }
     private void createListingCommentTable() throws SQLException {
         Statement stat = conn.createStatement();
         String query = "CREATE TABLE listing_comments(" +
