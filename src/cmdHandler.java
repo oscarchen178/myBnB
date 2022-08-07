@@ -306,8 +306,12 @@ public class cmdHandler {
         for (String listing : listings) {
             System.out.println(listing);
         }
-        System.out.print("Choose a listing lid: ");
+        System.out.print("Choose a listing lid or 'back': ");
         String lidStr = getArgLine();
+        if (lidStr.equals("back")) {
+            this.state = 11;
+            return;
+        }
         int lid = Integer.parseInt(lidStr);
         System.out.println("1, Edit Price");
         System.out.println("2, Insert New Date");
@@ -331,7 +335,7 @@ public class cmdHandler {
             String date = getArgLine();
             System.out.print("Price: ");
             String price = getArgLine();
-            System.out.println("Available: ");
+            System.out.print("Available: ");
             String ava = getArgLine();
             op.insertNewDate(lid, date, Integer.parseInt(price), ava);
         }
@@ -340,9 +344,12 @@ public class cmdHandler {
             System.out.println("Edit Available");
             System.out.print("Date: ");
             String date = getArgLine();
-            System.out.println("Available: ");
+            System.out.print("Available: ");
             String ava = getArgLine();
             op.changeCalendarAvailable(lid, ava, date);
+        }
+        if (input.equals("4")) {
+            this.state = 11;
         }
     }
 

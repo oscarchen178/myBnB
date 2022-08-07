@@ -58,10 +58,10 @@ public class mysqlDao {
         insertAccount("mail", "1111");
         insertUser(1,"Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
         insertRenter(1);
-//        insertListing(1, "full house", "33.33", "22.22", "1809, 50 brian harrison",
-//                "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
+        insertListing(1, "full house", "33.33", "22.22", "1809, 50 brian harrison",
+                "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
 //        insertRenter(1, "credit", 88888888, "25/07", 183);
-//        insertCalender(1, "2022-8-12", 200, "true");
+        insertCalender(1, "2022-8-12", 180, "true");
 //        insertCalender(1, "2022-8-13", 200, "true");
 //        insertBooking(1, 1, "2022-7-6", "2022-7-11", "booked");
 //        insertListingComment(1, 1, "Hello", "1");
@@ -378,7 +378,7 @@ public class mysqlDao {
 
     public boolean checkCalendarExist(int lid, String date) throws SQLException {
         Statement stat = conn.createStatement();
-        String query = "SELECT * FROM calendars WHERE lid = %d AND DATE(date) = '%s";
+        String query = "SELECT * FROM calendars WHERE lid = %d AND DATE(date) = '%s'";
         query = String.format(query, lid, date);
         ResultSet rs = stat.executeQuery(query);
         return rs.next();
@@ -421,7 +421,7 @@ public class mysqlDao {
     public boolean canModifyListing(int lid, String date) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "SELECT * FROM bookings WHERE lid = %d " +
-                "AND status != canceled AND status != done " +
+                "AND status != 'canceled' AND status != 'done' " +
                 "AND DATE(start) <= '%s' AND DATE(end) >= '%s'";
         query = String.format(query, lid, date, date);
         ResultSet rs = stat.executeQuery(query);
