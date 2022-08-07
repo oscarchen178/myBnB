@@ -518,6 +518,7 @@ public class cmdHandler {
         }catch (Exception e) {
             e.printStackTrace();
         }
+        getArgLine();
         this.state=15;
     }
     public void manageGetBookingsNumberCityPostal(){
@@ -537,6 +538,8 @@ public class cmdHandler {
         }catch (Exception e) {
             e.printStackTrace();
         }
+        getArgLine();
+
         this.state=15;
     }
     public void manageGetListingsNumberCountry(){
@@ -550,6 +553,8 @@ public class cmdHandler {
         }catch (Exception e) {
             e.printStackTrace();
         }
+        getArgLine();
+
         this.state=15;
     }
     public void manageGetListingsNumberCity(){
@@ -565,6 +570,8 @@ public class cmdHandler {
         }catch (Exception e) {
             e.printStackTrace();
         }
+        getArgLine();
+
         this.state=15;
     }
     public void manageGetListingsNumberPostal(){
@@ -582,6 +589,8 @@ public class cmdHandler {
         }catch (Exception e) {
             e.printStackTrace();
         }
+        getArgLine();
+
         this.state=15;
     }
     public void manageListingsRankByCountry(){
@@ -594,6 +603,8 @@ public class cmdHandler {
         }catch (Exception e) {
             e.printStackTrace();
         }
+        getArgLine();
+
         this.state=15;
     }
     public void manageListingsRankByCity(){
@@ -608,6 +619,8 @@ public class cmdHandler {
         }catch (Exception e) {
             e.printStackTrace();
         }
+        getArgLine();
+
         this.state=15;
     }
     public void manageListingsOwnerMoreThanTenPersentByCountry(){
@@ -620,6 +633,8 @@ public class cmdHandler {
         }catch (Exception e) {
             e.printStackTrace();
         }
+        getArgLine();
+
         this.state=15;
     }
     public void manageListingsOwnerMoreThanTenPersentByCity(){
@@ -634,6 +649,8 @@ public class cmdHandler {
         }catch (Exception e) {
             e.printStackTrace();
         }
+        getArgLine();
+
         this.state=15;
     }
     public void manageRentersRankByPeriod(){
@@ -648,6 +665,8 @@ public class cmdHandler {
         }catch (Exception e) {
             e.printStackTrace();
         }
+        getArgLine();
+
         this.state=15;
     }
     public void manageRentersRankByPeriodAndCity(){
@@ -664,6 +683,8 @@ public class cmdHandler {
         }catch (Exception e) {
             e.printStackTrace();
         }
+        getArgLine();
+
         this.state=15;
     }
     public void manageHostsLargestCanceled(){
@@ -674,6 +695,7 @@ public class cmdHandler {
         }catch (Exception e) {
             e.printStackTrace();
         }
+        getArgLine();
         this.state=15;
     }
     public void manageRentersLargestCanceled(){
@@ -685,6 +707,7 @@ public class cmdHandler {
         }catch (Exception e) {
             e.printStackTrace();
         }
+        getArgLine();
         this.state=15;
     }
 }
