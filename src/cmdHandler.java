@@ -7,11 +7,12 @@ public class cmdHandler {
     private Scanner s;
     private int uid;
     private int state;
-
-    public cmdHandler(operation op, Scanner s) {
+    mysqlDao dao;
+    public cmdHandler(operation op, Scanner s, mysqlDao dao) {
         this.op = op;
         this.state = 0;
         this.s = s;
+        this.dao = dao;
     }
 
     public void exec() {
@@ -46,7 +47,37 @@ public class cmdHandler {
             managelisting();
         } else if (state == 14) {
             managehostbooking();
+        } else if (state == 15){
+            managereport();
+        } else if (state == 16){
+            manageGetBookingsNumberCityPeriod();
+        } else if (state == 17){
+             manageGetBookingsNumberCityPostal();
+        } else if (state == 18){
+            manageGetListingsNumberCountry();
+        }else if (state == 19){
+            manageGetListingsNumberCity();
+        }else if (state == 20){
+            manageGetListingsNumberPostal();
+        }else if (state == 21){
+            manageListingsRankByCountry();
+        }else if (state == 22){
+            manageListingsRankByCity();
+        }else if (state == 23){
+            manageListingsOwnerMoreThanTenPersentByCountry();
+        }else if (state == 24){
+            manageListingsOwnerMoreThanTenPersentByCity();
+        }else if (state == 25){
+            manageRentersRankByPeriod();
+        }else if (state == 26){
+            manageRentersRankByPeriodAndCity();
+        }else if (state == 27){
+            manageHostsLargestCanceled();
+        }else if (state == 28){
+            manageRentersLargestCanceled();
         }
+
+
     }
 
     public String[] getArguments() {
@@ -67,10 +98,12 @@ public class cmdHandler {
         System.out.println("Welcome to MyBnB ~");
         System.out.println("1, Login");
         System.out.println("2, Register");
+        System.out.println("3, Report");
         System.out.print("Your choice: ");
         String[] arg = getArguments();
         if (arg[0].equals("1")) this.state = 1;
         else if (arg[0].equals("2")) this.state = 2;
+        else if (arg[0].equals("3")) this.state = 15;
         else System.out.println("Incorrect input!");
     }
 
@@ -419,5 +452,239 @@ public class cmdHandler {
         System.out.print("Comment: ");
         String cmt = getArgLine();
         op.commentRenter(this.uid, bid, cmt, rate);
+    }
+    public void managereport() {
+        System.out.println("Report");
+        System.out.println("0, go back to home page");
+        System.out.println("1, total number of bookings in a " +
+                "specific date range by city");
+        System.out.println("2, total number of bookings in a " +
+                "specific date range by city and zip code");
+        System.out.println("3, total number of listings in a " +
+                "country");
+        System.out.println("4, total number of listings in a " +
+                "city");
+        System.out.println("5, total number of listings in a " +
+                "postal code");
+        System.out.println("6, rank the hosts by the total number of listings they have " +
+                "per country");
+        System.out.println("7, rank the hosts by the total number of listings they have " +
+                "per city");
+        System.out.println("8, hosts that have " +
+                "number of listings that is more than 10% of the number of listings in a " +
+                "country");
+        System.out.println("9, hosts that have " +
+                "number of listings that is more than 10% of the number of listings in a " +
+                "city");
+        System.out.println("10, rank the renters by the number of bookings in a " +
+                "specific time period");
+        System.out.println("11, rank the renters by the number of bookings in a " +
+                "specific time period per city");
+        System.out.println("12, hosts with the largest number of " +
+                "cancellations within a year");
+        System.out.println("13, renters with the largest number of " +
+                "cancellations within a year");
+        System.out.print("Your choice: ");
+        String[] arg = getArguments();
+        if (arg[0].equals("1")) this.state = 16;
+        else if (arg[0].equals("0")) this.state = 0;
+        else if (arg[0].equals("2")) this.state = 17;
+        else if (arg[0].equals("3")) this.state = 18;
+        else if (arg[0].equals("4")) this.state = 19;
+        else if (arg[0].equals("5")) this.state = 20;
+        else if (arg[0].equals("6")) this.state = 21;
+        else if (arg[0].equals("7")) this.state = 22;
+        else if (arg[0].equals("8")) this.state = 23;
+        else if (arg[0].equals("9")) this.state = 24;
+        else if (arg[0].equals("10")) this.state = 25;
+        else if (arg[0].equals("11")) this.state = 26;
+        else if (arg[0].equals("12")) this.state = 27;
+        else if (arg[0].equals("13")) this.state = 28;
+
+        else System.out.println("Incorrect input!");
+    }
+    public void manageGetBookingsNumberCityPeriod(){
+        System.out.println("1, total number of bookings in a " +
+                "specific date range by city");
+        System.out.println("Please type in start date");
+        String start = getArgLine();
+        System.out.println("Please type in end date");
+        String end = getArgLine();
+        System.out.println("Please type in city");
+        String city = getArgLine();
+        System.out.println("Result is:");
+        try {
+            dao.getBookingsNumberCityPeriod(start, end, city);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.state=15;
+    }
+    public void manageGetBookingsNumberCityPostal(){
+        System.out.println("2, total number of bookings in a " +
+                "specific date range by city and zip code");
+        System.out.println("Please type in start date");
+        String start = getArgLine();
+        System.out.println("Please type in end date");
+        String end = getArgLine();
+        System.out.println("Please type in city");
+        String city = getArgLine();
+        System.out.println("Please type in postal code");
+        String postal = getArgLine();
+        try {
+            System.out.println("Result is:");
+            dao.getBookingsNumberCityPostal(start, end, city, postal);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.state=15;
+    }
+    public void manageGetListingsNumberCountry(){
+        System.out.println("3, total number of listings in a " +
+                "country");
+        System.out.println("Please type in Country");
+        String country = getArgLine();
+        try {
+            System.out.println("Result is:");
+            dao.getListingsNumberCountry(country);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.state=15;
+    }
+    public void manageGetListingsNumberCity(){
+        System.out.println("4, total number of listings in a " +
+                "city");
+        System.out.println("Please type in Country");
+        String country = getArgLine();
+        System.out.println("Please type in City");
+        String city = getArgLine();
+        try {
+            System.out.println("Result is:");
+            dao.getListingsNumberCity(country, city);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.state=15;
+    }
+    public void manageGetListingsNumberPostal(){
+        System.out.println("5, total number of listings in a " +
+                "Postal");
+        System.out.println("Please type in Country");
+        String country = getArgLine();
+        System.out.println("Please type in City");
+        String city = getArgLine();
+        System.out.println("Please type in Postal");
+        String postal = getArgLine();
+        try {
+            System.out.println("Result is:");
+            dao.getListingsNumberPostal(country, city, postal);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.state=15;
+    }
+    public void manageListingsRankByCountry(){
+        System.out.println("6, rank the hosts by the total number of listings they have per country");
+        System.out.println("Please type in Country");
+        String country = getArgLine();
+        try {
+            System.out.println("Result is:");
+            dao.listingsRankByCountry(country);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.state=15;
+    }
+    public void manageListingsRankByCity(){
+        System.out.println("7, rank the hosts by the total number of listings they have per city");
+        System.out.println("Please type in Country");
+        String country = getArgLine();
+        System.out.println("Please type in City");
+        String city = getArgLine();
+        try {
+            System.out.println("Result is:");
+            dao.listingsRankByCity(country, city);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.state=15;
+    }
+    public void manageListingsOwnerMoreThanTenPersentByCountry(){
+        System.out.println("8, hosts that have number of listings that is more than 10% of the number of listings in a country");
+        System.out.println("Please type in Country");
+        String country = getArgLine();
+        try {
+            System.out.println("Result is:");
+            dao.listingsOwnerMoreThanTenPersentByCountry(country);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.state=15;
+    }
+    public void manageListingsOwnerMoreThanTenPersentByCity(){
+        System.out.println("9, hosts that have number of listings that is more than 10% of the number of listings in a city");
+        System.out.println("Please type in Country");
+        String country = getArgLine();
+        System.out.println("Please type in City");
+        String city = getArgLine();
+        try {
+            System.out.println("Result is:");
+            dao.listingsOwnerMoreThanTenPersentByCity(country, city);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.state=15;
+    }
+    public void manageRentersRankByPeriod(){
+        System.out.println("10, rank the renters by the number of bookings in a specific time period");
+        System.out.println("Please type in start date");
+        String start = getArgLine();
+        System.out.println("Please type in end date");
+        String end = getArgLine();
+        try {
+            System.out.println("Result is:");
+            dao.rentersRankByPeriod(start, end);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.state=15;
+    }
+    public void manageRentersRankByPeriodAndCity(){
+        System.out.println("11, rank the renters by the number of bookings in a specific time period per city");
+        System.out.println("Please type in start date");
+        String start = getArgLine();
+        System.out.println("Please type in end date");
+        String end = getArgLine();
+        System.out.println("Please type in City");
+        String city = getArgLine();
+        try {
+            System.out.println("Result is:");
+            dao.rentersRankByPeriodAndCity(start, end, city);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.state=15;
+    }
+    public void manageHostsLargestCanceled(){
+        System.out.println("12, hosts with the largest number of cancellations within a year");
+        try {
+            System.out.println("Result is:");
+            dao.hostsLargestCanceled();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.state=15;
+    }
+    public void manageRentersLargestCanceled(){
+        System.out.println("13, renters with the largest number of cancellations within a year");
+
+        try {
+            System.out.println("Result is:");
+            dao.rentersLargestCanceled();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.state=15;
     }
 }

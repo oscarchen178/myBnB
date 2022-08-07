@@ -643,13 +643,15 @@ public class mysqlDao {
     }
 
 
-    public void getListingsNumberPostal(String country, String city, String postal_code) throws SQLException {
+    public int getListingsNumberPostal(String country, String city, String postal_code) throws SQLException {
         Statement stat = conn.createStatement();
-        String query = "SELECT COUNT(*) AS COUNT FROM listings " +
-                "where  city='%s' and country='%s and postal_code='%s'";
+        String query = "SELECT COUNT(*) AS COUNT FROM listings where city='%s' and country='%s' and postal_code='%s'";
         query = String.format(query, city, country, postal_code);
         ResultSet rs = stat.executeQuery(query);
-        System.out.println(rs.toString());
+        if(rs.next()){
+            System.out.println(rs.getInt("COUNT"));
+        }
+        return rs.getInt("COUNT");
     }
     public void listingsRankByCountry(String country) throws SQLException {
         Statement stat = conn.createStatement();
@@ -673,35 +675,39 @@ public class mysqlDao {
     }
     public void rentersRankByPeriod(String start, String end) throws SQLException {
         Statement stat = conn.createStatement();
-        System.out.println("------------------");
+
         String query = "select rid,count(rid) as count from bookings " +
                 "where DATE(start) BETWEEN '%s' AND '%s' and DATE(end)" +
-                " BETWEEN '%s' AND '%s' and status=\"booked\" group by rid order by count desc;";
+                " BETWEEN '%s' AND '%s' and status!=\"canceled\" group by rid order by count desc;";
         query = String.format(query, start, end, start, end);
         ResultSet rs = stat.executeQuery(query);
         while(rs.next()){
             System.out.println("rid:"+ rs.getLong("rid")+ " | count:"+rs.getLong("count"));
         }
-        System.out.println("----------------");
+
     }
     public void rentersRankByPeriodAndCity(String start, String end,String city) throws SQLException {
         Statement stat = conn.createStatement();
-        System.out.println("------------------");
-        String query = "select rid,count(rid) as count from bookings natural join" +
+
+//        String query = "select rid,count(rid) as count from bookings natural join" +
+//                " listings where DATE(start) BETWEEN '%s' AND '%s' " +
+//                "and DATE(end) BETWEEN '%s' AND '%s' and status!=\"canceled\" and city='%s'" +
+//              //  "and count > 2" +
+//                " group by rid order by count desc;";
+        String query = "select * from (select rid,count(rid) as count from bookings natural join" +
                 " listings where DATE(start) BETWEEN '%s' AND '%s' " +
-                "and DATE(end) BETWEEN '%s' AND '%s' and city='%s'" +
-              //  "and count > 2" +
-                " group by rid order by count desc;";
+                "and DATE(end) BETWEEN '%s' AND '%s' and status!=\"canceled\" and city='%s'" +
+                " group by rid order by count desc) as t1 where t1.count > 1;";
         query = String.format(query, start, end, start, end, city);
         ResultSet rs = stat.executeQuery(query);
         while(rs.next()){
             System.out.println("rid:"+ rs.getLong("rid")+ " | count:"+rs.getLong("count"));
         }
-        System.out.println("----------------");
+
     }
     public void rentersLargestCanceled() throws SQLException {
         Statement stat = conn.createStatement();
-        System.out.println("------------------");
+
         String query = "select rid,count(rid) as count from bookings natural join" +
                 " renters where status=\"canceled\"" +
                 " group by rid order by count desc;";
@@ -710,11 +716,10 @@ public class mysqlDao {
         while(rs.next()){
             System.out.println("rid:"+ rs.getLong("rid")+ " | canceled count:"+rs.getLong("count"));
         }
-        System.out.println("----------------");
+
     }
     public void hostsLargestCanceled() throws SQLException {
         Statement stat = conn.createStatement();
-        System.out.println("------------------");
         String query = "select oid,count(oid) as count from bookings natural join listings" +
                 " renters where status=\"canceled\"" +
                 " group by oid order by count desc;";
@@ -723,7 +728,7 @@ public class mysqlDao {
         while(rs.next()){
             System.out.println("hid:"+ rs.getLong("oid")+ " | canceled count:"+rs.getLong("count"));
         }
-        System.out.println("----------------");
+
     }
     public void listingsOwnerMoreThanTenPersentByCountry(String country) throws SQLException {
         Statement stat = conn.createStatement();
@@ -743,11 +748,11 @@ public class mysqlDao {
                     " | persentage:" + value + "%");
         }
     }
-    public void listingsOwnerMoreThanTenPersentByCity(String country) throws SQLException {
+    public void listingsOwnerMoreThanTenPersentByCity(String country,String city) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "select oid,count(oid) as count from listings " +
-                "where country= '%s' group by oid order by count desc;";
-        query = String.format(query, country);
+                "where country= '%s' and city='%s' group by oid order by count desc;";
+        query = String.format(query, country, city);
         ResultSet rs = stat.executeQuery(query);
         int total = getListingsNumberCountry(country);
         while(rs.next()){

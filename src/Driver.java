@@ -32,7 +32,7 @@ public class Driver {
 
 
             Scanner s = new Scanner(System.in);
-            cmdHandler cmd = new cmdHandler(op, s);
+            cmdHandler cmd = new cmdHandler(op, s, dao);
             while(true) {
                 cmd.exec();
             }
