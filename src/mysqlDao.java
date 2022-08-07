@@ -482,6 +482,32 @@ public class mysqlDao {
         }
         System.out.println("----------------");
     }
+    public void rentersLargestCanceled() throws SQLException {
+        Statement stat = conn.createStatement();
+        System.out.println("------------------");
+        String query = "select rid,count(rid) as count from bookings natural join" +
+                " renters where status=\"canceled\"" +
+                " group by rid order by count desc;";
+        query = String.format(query);
+        ResultSet rs = stat.executeQuery(query);
+        while(rs.next()){
+            System.out.println("rid:"+ rs.getLong("rid")+ " | canceled count:"+rs.getLong("count"));
+        }
+        System.out.println("----------------");
+    }
+    public void hostsLargestCanceled() throws SQLException {
+        Statement stat = conn.createStatement();
+        System.out.println("------------------");
+        String query = "select oid,count(oid) as count from bookings natural join listings" +
+                " renters where status=\"canceled\"" +
+                " group by oid order by count desc;";
+        query = String.format(query);
+        ResultSet rs = stat.executeQuery(query);
+        while(rs.next()){
+            System.out.println("hid:"+ rs.getLong("oid")+ " | canceled count:"+rs.getLong("count"));
+        }
+        System.out.println("----------------");
+    }
     public void listingsOwnerMoreThanTenPersentByCountry(String country) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "select oid,count(oid) as count from listings " +

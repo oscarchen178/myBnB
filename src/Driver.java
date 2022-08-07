@@ -27,6 +27,8 @@ public class Driver {
             op.deleteListing(1);
             dao.rentersRankByPeriod("2000-01-01", "2100-01-10");
             dao.rentersRankByPeriodAndCity("2000-01-01", "2100-01-10", "Scarborough");
+            dao.rentersLargestCanceled();
+            dao.hostsLargestCanceled();
         } catch (Exception e) {
             System.out.println(e);
         }
