@@ -105,7 +105,7 @@ public class mysqlDao {
             String query = "LOAD DATA LOCAL INFILE 'src/"+fname+".csv' " +
                     "INTO TABLE "+fname+" " +
                     "FIELDS TERMINATED BY ',' " +
-                    "ENCLOSED BY '\"' " +
+//                    "ENCLOSED BY '\"' " +
                     "LINES TERMINATED BY '\\n' " +
                     "IGNORE 1 ROWS;";
             stat.executeUpdate(query);
@@ -119,7 +119,7 @@ public class mysqlDao {
                 "rid INT, " +
                 "lid INT, " +
                 "comment TEXT, " +
-                "rate ENUM('1', '2', '3', '4', '5'), " +
+                "rate varchar(1), " +
                 "foreign key (lid) references listings(lid), " +
                 "foreign key (rid) references renters(rid));";
         stat.executeUpdate(query);
@@ -132,7 +132,7 @@ public class mysqlDao {
                 "hid INT, " +
                 "rid INT, " +
                 "comment TEXT, " +
-                "rate ENUM('1', '2', '3', '4', '5'), " +
+                "rate varchar(1), " +
                 "foreign key (hid) references users(uid), " +
                 "foreign key (rid) references renters(rid));";
         stat.executeUpdate(query);
@@ -145,7 +145,7 @@ public class mysqlDao {
                 "rid INT, " +
                 "hid INT, " +
                 "comment TEXT, " +
-                "rate ENUM('1', '2', '3', '4', '5'), " +
+                "rate varchar(1), " +
                 "foreign key (hid) references users(uid), " +
                 "foreign key (rid) references renters(rid));";
         stat.executeUpdate(query);
@@ -255,7 +255,7 @@ public class mysqlDao {
                 "lid INT NOT NULL, " +
                 "start DATE NOT NULL, " +
                 "end DATE NOT NULL, " +
-                "status ENUM('done','ongoing','booked','canceled') DEFAULT 'booked', " +
+                "status varchar(8) DEFAULT 'booked', " +
                 "foreign key (rid) references renters(rid) ON DELETE CASCADE, " +
 //                "foreign key (hid) references users(uid), " +
                 "foreign key (lid) references listings(lid) ON DELETE CASCADE, " +

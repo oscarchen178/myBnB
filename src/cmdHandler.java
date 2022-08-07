@@ -277,7 +277,43 @@ public class cmdHandler {
         System.out.println("2, postal code");
         System.out.println("3, price range");
         System.out.println("4, date range");
-
+        System.out.println("5, address city country");
+        System.out.println("Choose the filters you want to use ~");
+        System.out.print("(Separate By Space): ");
+        String[] args = getArguments();
+        for (String arg: args) {
+            if (arg.equals("1")) {
+                System.out.print("latitude: ");
+                String lat = getArgLine();
+                System.out.print("longitude: ");
+                String lon = getArgLine();
+                System.out.print("radius: ");
+                String r = getArgLine();
+                if (r.equals("")) {
+                    r = "10";
+                }
+            }
+            if (arg.equals("2")) {
+                System.out.print("Postal Code: ");
+                String post = getArgLine();
+            }
+            if (arg.equals("3")) {
+                System.out.print("Low: ");
+                String low = getArgLine();
+                System.out.print("High: ");
+                String high = getArgLine();
+            }
+            if (arg.equals("4")) {
+                System.out.print("Start: ");
+                String start = getArgLine();
+                System.out.print("End: ");
+                String end = getArgLine();
+            }
+            if (arg.equals("5")) {
+                System.out.print("Postal Code: ");
+                String post = getArgLine();
+            }
+        }
     }
 
     public void managebooking() {
