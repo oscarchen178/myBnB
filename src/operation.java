@@ -261,4 +261,38 @@ public class operation {
         }
     }
 
+    public ArrayList<String> getAllHostBookings(int oid) {
+        try {
+            ArrayList<String> arr = new ArrayList<String>();
+            ResultSet rs = dao.getHostBookings(oid);
+            while (rs.next()) {
+                String aBook = rs.getString("bid") + ", " + rs.getString("rid") + ", " +
+                        rs.getString("lid") + ", " + rs.getString("start") + ", " +
+                        rs.getString("end") + ", " + rs.getString("status");
+                arr.add(aBook);
+            }
+            return arr;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public ArrayList<String> getAllBookings(int rid) {
+        try {
+            ArrayList<String> arr = new ArrayList<String>();
+            ResultSet rs = dao.getRenterBookings(rid);
+            while (rs.next()) {
+                String aBook = rs.getString("bid") + ", " + rs.getString("rid") + ", " +
+                        rs.getString("lid") + ", " + rs.getString("start") + ", " +
+                        rs.getString("end") + ", " + rs.getString("status");
+                arr.add(aBook);
+            }
+            return arr;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

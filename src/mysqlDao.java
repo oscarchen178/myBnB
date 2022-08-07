@@ -58,12 +58,22 @@ public class mysqlDao {
         insertAccount("mail", "1111");
         insertUser(1,"Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
         insertRenter(1);
+
+        insertAccount("mail2", "2222");
+        insertUser(2,"Jason", "51 Brian Harrison", "2001-2-27", "student", 666666);
+        insertRenter(2);
+
         insertListing(1, "full house", "33.33", "22.22", "1809, 50 brian harrison",
+                "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
+        insertListing(2, "room", "33.33", "22.22", "1809, 50 brian harrison",
                 "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
 //        insertRenter(1, "credit", 88888888, "25/07", 183);
         insertCalender(1, "2022-8-12", 180, "true");
 //        insertCalender(1, "2022-8-13", 200, "true");
-//        insertBooking(1, 1, "2022-7-6", "2022-7-11", "booked");
+        insertBooking(1, 1, "2022-7-6", "2022-7-11", "booked");
+        insertBooking(2, 1, "2023-7-11", "2023-7-11", "booked");
+        insertBooking(2, 1, "2025-7-6", "2025-7-11", "booked");
+        insertBooking(1, 2, "2022-8-6", "2022-8-11", "booked");
 //        insertListingComment(1, 1, "Hello", "1");
 //        insertRenterComment(1, 1, "Hello", "1");
 //        insertHostComment(1, 1, "Hello", "1");
@@ -485,6 +495,20 @@ public class mysqlDao {
         Statement stat = conn.createStatement();
         String query = "SELECT * FROM listings WHERE oid = %d";
         query = String.format(query, oid);
+        return stat.executeQuery(query);
+    }
+
+    public ResultSet getHostBookings(int oid) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT * FROM bookings WHERE lid IN (SELECT lid FROM listings WHERE oid = %d)";
+        query = String.format(query, oid);
+        return stat.executeQuery(query);
+    }
+
+    public ResultSet getRenterBookings(int rid) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT * FROM bookings WHERE rid = %d";
+        query = String.format(query, rid);
         return stat.executeQuery(query);
     }
 

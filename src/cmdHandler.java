@@ -245,7 +245,19 @@ public class cmdHandler {
     }
 
     public void managebooking() {
-
+        System.out.println("My Bookings");
+        ArrayList<String> bookings = op.getAllBookings(this.uid);
+        for (String booking : bookings) {
+            System.out.println(booking);
+        }
+        System.out.print("Choose a Booking to cancel or 'back': ");
+        String input = getArgLine();
+        if (input.equals("back") || input.equals("")) {
+            this.state = 11;
+            return;
+        }
+        int bid = Integer.parseInt(input);
+        op.cancelBook(bid);
     }
 
     public void cmtlisting() {
@@ -308,7 +320,7 @@ public class cmdHandler {
         }
         System.out.print("Choose a listing lid or 'back': ");
         String lidStr = getArgLine();
-        if (lidStr.equals("back")) {
+        if (lidStr.equals("back") || lidStr.equals("")) {
             this.state = 11;
             return;
         }
@@ -354,7 +366,19 @@ public class cmdHandler {
     }
 
     public void managehostbooking() {
-
+        System.out.println("Host Existing Bookings");
+        ArrayList<String> bookings = op.getAllHostBookings(this.uid);
+        for (String booking : bookings) {
+            System.out.println(booking);
+        }
+        System.out.print("Choose a Booking to cancel or 'back': ");
+        String input = getArgLine();
+        if (input.equals("back") || input.equals("")) {
+            this.state = 11;
+            return;
+        }
+        int bid = Integer.parseInt(input);
+        op.cancelBook(bid);
     }
 
     public void cmtrenter() {
