@@ -206,8 +206,9 @@ public class operation {
         }
     }
 
-    public void commentListing(int rid, int lid, String comment, String rate) {
+    public void commentListing(int rid, int bid, String comment, String rate) {
         try {
+            int lid = dao.getLidByBid(bid);
             dao.insertListingComment(rid, lid, comment, rate);
   //          System.out.println("comment about"+lid +":" +comment);
         } catch (Exception e) {
@@ -215,8 +216,9 @@ public class operation {
         }
     }
 
-    public void commentRenter(int hid, int rid, String comment, String rate) {
+    public void commentRenter(int hid, int bid, String comment, String rate) {
         try {
+            int rid = dao.getRidByBid(bid);
             dao.insertRenterComment(hid, rid, comment, rate);
      //       System.out.println("comment from host"+ hid +" to renter "+ rid +":" +comment);
         } catch (Exception e) {
@@ -224,8 +226,9 @@ public class operation {
         }
     }
 
-    public void commentHost(int rid, int hid, String comment, String rate) {
+    public void commentHost(int rid, int bid, String comment, String rate) {
         try {
+            int hid = dao.getHidByBid(bid);
             dao.insertHostComment(rid, hid, comment, rate);
             //       System.out.println("comment from host"+ hid +" to renter "+ rid +":" +comment);
         } catch (Exception e) {
@@ -261,10 +264,10 @@ public class operation {
         }
     }
 
-    public ArrayList<String> getAllHostBookings(int oid) {
+    public ArrayList<String> getAllHostBookings(int oid, boolean done) {
         try {
             ArrayList<String> arr = new ArrayList<String>();
-            ResultSet rs = dao.getHostBookings(oid);
+            ResultSet rs = dao.getHostBookings(oid, done);
             while (rs.next()) {
                 String aBook = rs.getString("bid") + ", " + rs.getString("rid") + ", " +
                         rs.getString("lid") + ", " + rs.getString("start") + ", " +
@@ -278,10 +281,10 @@ public class operation {
         }
     }
 
-    public ArrayList<String> getAllBookings(int rid) {
+    public ArrayList<String> getAllBookings(int rid, boolean done) {
         try {
             ArrayList<String> arr = new ArrayList<String>();
-            ResultSet rs = dao.getRenterBookings(rid);
+            ResultSet rs = dao.getRenterBookings(rid, done);
             while (rs.next()) {
                 String aBook = rs.getString("bid") + ", " + rs.getString("rid") + ", " +
                         rs.getString("lid") + ", " + rs.getString("start") + ", " +

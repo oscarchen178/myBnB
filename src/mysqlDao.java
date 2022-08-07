@@ -70,7 +70,7 @@ public class mysqlDao {
 //        insertRenter(1, "credit", 88888888, "25/07", 183);
         insertCalender(1, "2022-8-12", 180, "true");
 //        insertCalender(1, "2022-8-13", 200, "true");
-        insertBooking(1, 1, "2022-7-6", "2022-7-11", "booked");
+        insertBooking(1, 1, "2022-7-6", "2022-7-11", "done");
         insertBooking(2, 1, "2023-7-11", "2023-7-11", "booked");
         insertBooking(2, 1, "2025-7-6", "2025-7-11", "booked");
         insertBooking(1, 2, "2022-8-6", "2022-8-11", "booked");
@@ -498,18 +498,63 @@ public class mysqlDao {
         return stat.executeQuery(query);
     }
 
-    public ResultSet getHostBookings(int oid) throws SQLException {
+//    public ResultSet getRListings(int rid) throws SQLException {
+//        Statement stat = conn.createStatement();
+//        String query = "SELECT * FROM listings WHERE lid IN (SELECT lid FROM bookings WHERE ";
+//        query = String.format(query, oid);
+//        return stat.executeQuery(query);
+//    }
+
+    public ResultSet getHostBookings(int oid, boolean done) throws SQLException {
         Statement stat = conn.createStatement();
-        String query = "SELECT * FROM bookings WHERE lid IN (SELECT lid FROM listings WHERE oid = %d)";
+        String query = "SELECT * FROM bookings WHERE " + (done ? "" : "status = 'done' AND ") +
+                "lid IN (SELECT lid FROM listings WHERE oid = %d)";
         query = String.format(query, oid);
         return stat.executeQuery(query);
     }
 
-    public ResultSet getRenterBookings(int rid) throws SQLException {
+    public ResultSet getRenterBookings(int rid, boolean done) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "SELECT * FROM bookings WHERE rid = %d";
+        if (done) query += " AND status = 'done'";
         query = String.format(query, rid);
         return stat.executeQuery(query);
+    }
+
+    public int getLidByBid(int bid) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT lid FROM bookings WHERE bid = %d";
+        query = String.format(query, bid);
+        ResultSet rs = stat.executeQuery(query);
+        if (rs.next()) {
+            return rs.getInt("lid");
+        } else {
+            return -1;
+        }
+    }
+
+    public int getHidByBid(int bid) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT oid FROM listings WHERE lid = (SELECT lid FROM bookings WHERE bid = %d)";
+        query = String.format(query, bid);
+        ResultSet rs = stat.executeQuery(query);
+        if (rs.next()) {
+            return rs.getInt("oid");
+        } else {
+            return -1;
+        }
+    }
+
+    public int getRidByBid(int bid) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT rid FROM bookings WHERE bid = %d";
+        query = String.format(query, bid);
+        ResultSet rs = stat.executeQuery(query);
+        if (rs.next()) {
+            return rs.getInt("rid");
+        } else {
+            return -1;
+        }
     }
 
 }

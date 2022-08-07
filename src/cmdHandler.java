@@ -35,9 +35,9 @@ public class cmdHandler {
         } else if (state == 8) {
             managebooking();
         } else if (state == 9) {
-            cmtlisting();
+            rentercmt();
         } else if (state == 10) {
-            cmthost();
+            hostcmt();
         } else if (state == 11) {
             host();
         } else if (state == 12) {
@@ -46,8 +46,6 @@ public class cmdHandler {
             managelisting();
         } else if (state == 14) {
             managehostbooking();
-        } else if (state == 15) {
-            cmtrenter();
         }
     }
 
@@ -203,19 +201,17 @@ public class cmdHandler {
         System.out.println("1, Payment");
         System.out.println("2, Book a Listing");
         System.out.println("3, Manage Booking");
-        System.out.println("4, Comment to Listing");
-        System.out.println("5, Comment to Host");
-        System.out.println("6, Back to Home");
-        System.out.println("7, Logout");
+        System.out.println("4, Write Comment");
+        System.out.println("5, Back to Home");
+        System.out.println("6, Logout");
         System.out.print("Your choice: ");
         String input = getArgLine();
         if (input.equals("1")) this.state = 6;
         if (input.equals("2")) this.state = 7;
         if (input.equals("3")) this.state = 8;
         if (input.equals("4")) this.state = 9;
-        if (input.equals("5")) this.state = 10;
-        if (input.equals("6")) this.state = 3;
-        if (input.equals("7")) this.state = 0;
+        if (input.equals("5")) this.state = 3;
+        if (input.equals("6")) this.state = 0;
     }
 
     public void payment() {
@@ -241,12 +237,14 @@ public class cmdHandler {
     }
 
     public void booklisting() {
-
+        String filter;
+        System.out.println("Find A Listing then Book ~");
+        System.out.println("1, Filter with latitude & longitude");
     }
 
     public void managebooking() {
         System.out.println("My Bookings");
-        ArrayList<String> bookings = op.getAllBookings(this.uid);
+        ArrayList<String> bookings = op.getAllBookings(this.uid, false);
         for (String booking : bookings) {
             System.out.println(booking);
         }
@@ -260,12 +258,29 @@ public class cmdHandler {
         op.cancelBook(bid);
     }
 
-    public void cmtlisting() {
-
-    }
-
-    public void cmthost() {
-
+    public void rentercmt() {
+        System.out.println("Choose a Booking to Comment");
+        ArrayList<String> bookings = op.getAllBookings(this.uid, true);
+        for (String booking : bookings) {
+            System.out.println(booking);
+        }
+        System.out.print("Choose a Booking to comment or 'back': ");
+        String input = getArgLine();
+        if (input.equals("back") || input.equals("")) {
+            this.state = 11;
+            return;
+        }
+        int bid = Integer.parseInt(input);
+        System.out.println("1, Comment to Listing");
+        System.out.println("2, Comment to Host");
+        System.out.print("Your Choice: ");
+        input = getArgLine();
+        System.out.print("Rate [1 ~ 5]: ");
+        String rate = getArgLine();
+        System.out.print("Comment: ");
+        String cmt = getArgLine();
+        if (input.equals("1")) op.commentListing(this.uid, bid, cmt, rate);
+        if (input.equals("2")) op.commentHost(this.uid, bid, cmt, rate);
     }
 
     public void host() {
@@ -281,7 +296,7 @@ public class cmdHandler {
         if (input.equals("1")) this.state = 12;
         if (input.equals("2")) this.state = 13;
         if (input.equals("3")) this.state = 14;
-        if (input.equals("4")) this.state = 15;
+        if (input.equals("4")) this.state = 10;
         if (input.equals("5")) this.state = 3;
         if (input.equals("6")) this.state = 0;
     }
@@ -367,7 +382,7 @@ public class cmdHandler {
 
     public void managehostbooking() {
         System.out.println("Host Existing Bookings");
-        ArrayList<String> bookings = op.getAllHostBookings(this.uid);
+        ArrayList<String> bookings = op.getAllHostBookings(this.uid, false);
         for (String booking : bookings) {
             System.out.println(booking);
         }
@@ -381,7 +396,23 @@ public class cmdHandler {
         op.cancelBook(bid);
     }
 
-    public void cmtrenter() {
-
+    public void hostcmt() {
+        System.out.println("Choose a Booking to Comment");
+        ArrayList<String> bookings = op.getAllHostBookings(this.uid, false);
+        for (String booking : bookings) {
+            System.out.println(booking);
+        }
+        System.out.print("Choose a Booking to comment or 'back': ");
+        String input = getArgLine();
+        if (input.equals("back") || input.equals("")) {
+            this.state = 11;
+            return;
+        }
+        int bid = Integer.parseInt(input);
+        System.out.print("Rate [1 ~ 5]: ");
+        String rate = getArgLine();
+        System.out.print("Comment: ");
+        String cmt = getArgLine();
+        op.commentRenter(this.uid, bid, cmt, rate);
     }
 }
