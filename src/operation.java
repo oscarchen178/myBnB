@@ -1,5 +1,5 @@
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -8,8 +8,8 @@ public class operation {
 
     private mysqlDao dao;
 
-    public operation() {
-        this.dao = new mysqlDao();
+    public operation(mysqlDao dao) {
+        this.dao = dao;
     }
 
     //create a new listing and associate it with their account, cancel a booking or remove a listing. change price
@@ -37,7 +37,6 @@ public class operation {
         try {
             dao.insertBooking(uid, lid, start, end, "booked");
             dao.updateAvailable(lid, start, end, "false");
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -45,7 +44,38 @@ public class operation {
 
     public void cancelBook(int bid) {
         // update booking status to canceled, get lid, start, end using bid, update available
+        try {
+            dao.updateBookingStatus(bid, -1, "canceled");;
+            ResultSet rs = dao.getBooking(bid);
+            if (!rs.next()) {
+                System.out.println("This booking not exist!");
+            }
+            int lid = rs.getInt("lid");
+            String start = rs.getString("start");
+            String end = rs.getString("end");
+            dao.updateAvailable(lid, start, end, "true");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void changeCalendarPrice(int lid, int price, String date) {
+        try {
+            dao.updateCalendarPrice(lid, price, date);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteListing(int lid) {
+        // cancel all bookings and delete its calendar
+        try {
+            dao.updateBookingStatus(-1, lid, "canceled");
+            dao.deleteCalendar(lid);
+            System.out.println("deleted listing: " + lid);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public void register(String email, String psw) {
         try {

@@ -1,9 +1,6 @@
 import java.sql.*;
-import java.util.Calendar;
 
 public class mysqlDao {
-
-    private static final String dbClassName = "com.mysql.cj.jdbc.Driver";
     private static final String dbURL = "jdbc:mysql://localhost:3306/mydb";
     private Connection conn;
 
@@ -194,7 +191,7 @@ public class mysqlDao {
                 "date DATE NOT NULL, " +
                 "price INT(5) NOT NULL, " +
                 "available BOOL DEFAULT false, " +
-                "foreign key (lid) references listings(lid));";
+                "foreign key (lid) references listings(lid) ON DELETE CASCADE);";
         stat.executeUpdate(query);
         System.out.println("++ created table: calenders");
     }
@@ -209,9 +206,9 @@ public class mysqlDao {
                 "start DATE NOT NULL, " +
                 "end DATE NOT NULL, " +
                 "status ENUM('done','ongoing','booked','canceled') DEFAULT 'booked', " +
-                "foreign key (rid) references renters(rid), " +
+                "foreign key (rid) references renters(rid) ON DELETE CASCADE, " +
 //                "foreign key (hid) references users(uid), " +
-                "foreign key (lid) references listings(lid), " +
+                "foreign key (lid) references listings(lid) ON DELETE CASCADE, " +
                 "PRIMARY KEY (bid));";
         stat.executeUpdate(query);
         System.out.println("++ created table: bookings");
@@ -338,10 +335,49 @@ public class mysqlDao {
     public void updateAvailable(int lid, String start, String end, String available) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "UPDATE calendars " +
-                "SET available=%s " +
-                "WHERE lid=%d AND available=true AND DATE(date) " +
+                "SET available = %s " +
+                "WHERE lid=%d AND DATE(date) " +
                 "BETWEEN '%s' AND '%s'";
         query = String.format(query, available, lid, start, end);
         stat.executeUpdate(query);
     }
+
+    public void updateBookingStatus(int bid, int lid, String status) throws SQLException {
+        Statement stat = conn.createStatement();
+        if (lid == -1) {
+            String query = "UPDATE bookings " +
+                    "SET status='%s' " +
+                    "WHERE bid=%d";
+            query = String.format(query, status, bid);
+            stat.executeUpdate(query);
+        } else {
+            String query = "UPDATE bookings " +
+                    "SET status='%s' " +
+                    "WHERE lid=%d AND status!='done'";
+            query = String.format(query, status, lid);
+            stat.executeUpdate(query);
+        }
+    }
+
+    public ResultSet getBooking(int bid) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT * FROM bookings WHERE bid=%d";
+        query = String.format(query, bid);
+        return stat.executeQuery(query);
+    }
+
+    public void updateCalendarPrice(int lid, int price, String date) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "UPDATE calendars SET price = %d WHERE date = '%s' AND lid = %d AND available = true";
+        query = String.format(query, price, date, lid);
+        stat.executeUpdate(query);
+    }
+
+    public void deleteCalendar(int lid) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "DELETE FROM calendars WHERE lid = %d";
+        query = String.format(query, lid);
+        stat.executeUpdate(query);
+    }
+
 }
