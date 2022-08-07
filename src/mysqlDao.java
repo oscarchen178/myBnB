@@ -125,7 +125,7 @@ public class mysqlDao {
         stat.executeUpdate(query);
         System.out.println("++ created table: users");
     }
-    private void editUserProfile(int uid, String name, String address, String birthday, String occu, int sin) throws SQLException {
+    public void editUserProfile(int uid, String name, String address, String birthday, String occu, int sin) throws SQLException {
         Statement stat = conn.createStatement();
         String query = " UPDATE users set name='%s', address='%s', birthday='%s', occupation='%s', sin=%d where uid=%d";
         query = String.format(query, name,address,birthday,occu,sin, uid);
@@ -178,7 +178,7 @@ public class mysqlDao {
         stat.executeUpdate(query);
         System.out.println("++ created table: renters");
     }
-    private void editPayment(int rid, String method, int card_num, String expire, int cvv) throws SQLException {
+    public void editPayment(int rid, String method, int card_num, String expire, int cvv) throws SQLException {
         Statement stat = conn.createStatement();
         String query = " UPDATE renters set method='%s', card_num=%d, expire='%s', cvv='%d'where rid=%d";
         query = String.format(query, method,card_num,expire,cvv,rid);
