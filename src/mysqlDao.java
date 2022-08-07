@@ -55,19 +55,20 @@ public class mysqlDao {
         createBookingsTable();
         System.out.println("Tables create complete ~");
         // insert some data
-        insertAccount("aaa@mail.com", "123456");
+        insertAccount("mail", "1111");
         insertUser(1,"Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
-        insertListing(1, "full house", "33.33", "22.22", "1809, 50 brian harrison",
-                "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
-        insertRenter(1, "credit", 88888888, "25/07", 183);
-        insertCalender(1, "2022-8-12", 200, "true");
-        insertCalender(1, "2022-8-13", 200, "true");
-        insertBooking(1, 1, "2022-7-6", "2022-7-11", "booked");
-        insertListingComment(1, 1, "Hello", "1");
-        insertRenterComment(1, 1, "Hello", "1");
-        insertHostComment(1, 1, "Hello", "1");
-        editUserProfile(1, "qiqiqiqiqiqi", "wenzhou", "1997-01-01", "musician", 193382);
-        editPayment(1,"credit", 38838,"11/28", 123);
+        insertRenter(1);
+//        insertListing(1, "full house", "33.33", "22.22", "1809, 50 brian harrison",
+//                "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
+//        insertRenter(1, "credit", 88888888, "25/07", 183);
+//        insertCalender(1, "2022-8-12", 200, "true");
+//        insertCalender(1, "2022-8-13", 200, "true");
+//        insertBooking(1, 1, "2022-7-6", "2022-7-11", "booked");
+//        insertListingComment(1, 1, "Hello", "1");
+//        insertRenterComment(1, 1, "Hello", "1");
+//        insertHostComment(1, 1, "Hello", "1");
+//        editUserProfile(1, "qiqiqiqiqiqi", "wenzhou", "1997-01-01", "musician", 193382);
+//        editPayment(1,"credit", 38838,"11/28", 123);
     }
 
     private void createListingCommentTable() throws SQLException {
@@ -176,12 +177,19 @@ public class mysqlDao {
         System.out.println("++ created table: renters");
     }
 
-    public void editPayment(int rid, String method, int card_num, String expire, int cvv) throws SQLException {
+    public void updatePayment(int rid, String method, String card_num, String expire, String cvv) throws SQLException {
         Statement stat = conn.createStatement();
-        String query = " UPDATE renters set method='%s', card_num=%d, expire='%s', cvv='%d'where rid=%d";
+        String query = "UPDATE renters set method='%s', card_num=%s, expire='%s', cvv=%s where rid=%d";
         query = String.format(query, method,card_num,expire,cvv,rid);
         stat.executeUpdate(query);
         System.out.println("++ edit payment rid:" + rid);
+    }
+
+    public ResultSet getRenter(int rid) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT * FROM renters WHERE rid=%d";
+        query = String.format(query, rid);
+        return stat.executeQuery(query);
     }
 
     private void createCalendarTable() throws SQLException {
@@ -214,15 +222,32 @@ public class mysqlDao {
         System.out.println("++ created table: bookings");
     }
 
-    public void insertAccount(String email, String psw) throws SQLException {
+    public void insertAccount(String email, String pswd) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "INSERT INTO accounts " +
                 "(email, password) " +
                 "VALUES " +
                 "('%s', '%s')";
-        query = String.format(query, email, psw);
+        query = String.format(query, email, pswd);
         stat.executeUpdate(query);
         System.out.println("++ register email: "+ email);
+    }
+
+    public boolean checkEmailExist(String email) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT * FROM accounts WHERE email = '%s'";
+        query = String.format(query, email);
+        ResultSet rs = stat.executeQuery(query);
+        return rs.next();
+    }
+
+    public int getUid(String email, String pswd) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT aid FROM accounts WHERE email = '%s' AND password = '%s'";
+        query = String.format(query, email, pswd);
+        ResultSet rs = stat.executeQuery(query);
+        if (!rs.next()) return -1;
+        return rs.getInt("aid");
     }
 
 
@@ -249,17 +274,36 @@ public class mysqlDao {
         System.out.println("++ inserted listing: "+address);
     }
 
+    public boolean checkAddrExist(String addr, String city, String country) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT * FROM listings WHERE address = '%s' AND city = '%s' AND country = '%s'";
+        query = String.format(query, addr, city, country);
+        ResultSet rs = stat.executeQuery(query);
+        return rs.next();
+    }
 
 
-    public void insertRenter(int hid, String method, int card_num, String expire, int cvv) throws SQLException {
+
+    public void insertRenter(int rid, String method, int card_num, String expire, int cvv) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "INSERT INTO renters " +
                 "(rid, method, card_num, expire, cvv) " +
                 "VALUES " +
                 "(%d, '%s', %d, '%s', %d)";
-        query = String.format(query, hid, method, card_num, expire, cvv);
+        query = String.format(query, rid, method, card_num, expire, cvv);
         stat.executeUpdate(query);
-        System.out.println("++ inserted host: "+hid);
+        System.out.println("++ inserted payment: "+ rid);
+    }
+
+    public void insertRenter(int rid) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "INSERT INTO renters " +
+                "(rid) " +
+                "VALUES " +
+                "(%d)";
+        query = String.format(query, rid);
+        stat.executeUpdate(query);
+        System.out.println("++ inserted payment: "+ rid);
     }
 
     public void insertCalender(int lid, String date, int price, String available) throws SQLException {
@@ -332,6 +376,14 @@ public class mysqlDao {
         return false;
     }
 
+    public boolean checkCalendarExist(int lid, String date) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT * FROM calendars WHERE lid = %d AND DATE(date) = '%s";
+        query = String.format(query, lid, date);
+        ResultSet rs = stat.executeQuery(query);
+        return rs.next();
+    }
+
     public void updateAvailable(int lid, String start, String end, String available) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "UPDATE calendars " +
@@ -366,10 +418,27 @@ public class mysqlDao {
         return stat.executeQuery(query);
     }
 
+    public boolean canModifyListing(int lid, String date) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT * FROM bookings WHERE lid = %d " +
+                "AND status != canceled AND status != done " +
+                "AND DATE(start) <= '%s' AND DATE(end) >= '%s'";
+        query = String.format(query, lid, date, date);
+        ResultSet rs = stat.executeQuery(query);
+        return !rs.next();
+    }
+
     public void updateCalendarPrice(int lid, int price, String date) throws SQLException {
         Statement stat = conn.createStatement();
-        String query = "UPDATE calendars SET price = %d WHERE date = '%s' AND lid = %d AND available = true";
+        String query = "UPDATE calendars SET price = %d WHERE date = '%s' AND lid = %d";
         query = String.format(query, price, date, lid);
+        stat.executeUpdate(query);
+    }
+
+    public void updateCalendarAvailable(int lid, String ava, String date) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "UPDATE calendars SET available = %s WHERE date = '%s' AND lid = %d";
+        query = String.format(query, ava, date, lid);
         stat.executeUpdate(query);
     }
 
@@ -378,6 +447,45 @@ public class mysqlDao {
         String query = "DELETE FROM calendars WHERE lid = %d";
         query = String.format(query, lid);
         stat.executeUpdate(query);
+    }
+
+    public void updateUser(int uid, String name, String address, String birthday, String occu, String sin) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "UPDATE users SET ";
+        if (name != "") query += ("name = '" + name + "'");
+        if (address != "") {
+            if (name != "") query += ", ";
+            query += ("address = '" + address + "'");
+        }
+        if (birthday != "") {
+            if (name != "" || address != "") query += ", ";
+            query += ("birthday = '" + birthday + "'");
+        }
+        if (occu != "") {
+            if (name != "" || address != "" || birthday != "") query += ", ";
+            query += ("occu = '" + occu + "'");
+        }
+        if (sin != "") {
+            if (name != "" || address != "" || birthday != "" || occu != "") query += ", ";
+            query += ("sin = " + sin);
+        }
+
+        query += (" WHERE uid = " + uid);
+        stat.executeUpdate(query);
+    }
+
+    public ResultSet getUser(int uid) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT * FROM users WHERE uid = %d";
+        query = String.format(query, uid);
+        return stat.executeQuery(query);
+    }
+
+    public ResultSet getListings(int oid) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT * FROM listings WHERE oid = %d";
+        query = String.format(query, oid);
+        return stat.executeQuery(query);
     }
 
 }
