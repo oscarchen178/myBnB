@@ -57,8 +57,15 @@ public class mysqlDao {
         System.out.println("Tables create complete ~");
         // insert some data
         insertAccount("aaa@mail.com", "123456");
+        insertAccount("aab@mail.com", "123456");
         insertUser(1,"Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
+
+        insertUser(2,"bob", "50 Brian Harrison", "2001-2-27", "student", 668666);
         insertListing(1, "full house", "33.33", "22.22", "1809, 50 brian harrison",
+                "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
+        insertListing(1, "full house", "33.33", "22.22", "1810, 50 brian harrison",
+                "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
+        insertListing(2, "full house", "33.33", "22.22", "0810, 50 brian harrison",
                 "Scarborough", "Canada", "M2P 6J4", "('Shampoo,Dishwasher')");
         insertRenter(1, "credit", 88888888, "25/07", 183);
         insertCalender(1, "2022-8-12", 200, "true");
@@ -69,6 +76,10 @@ public class mysqlDao {
         insertHostComment(1, 1, "Hello", "1");
         editUserProfile(1, "qiqiqiqiqiqi", "wenzhou", "1997-01-01", "musician", 193382);
         editPayment(1,"credit", 38838,"11/28", 123);
+        listingsRankByCountry("Canada");
+        listingsRankByCity("Canada", "Scarborough");
+        getListingsNumberCountry("Canada");
+        listingsOwnerMoreThanTenPersentByCountry("Canada");
     }
 //    public void pushData() throws SQLException {
 //        Statement stat = conn.createStatement();
@@ -390,5 +401,94 @@ public class mysqlDao {
         query = String.format(query, lid);
         stat.executeUpdate(query);
     }
+    public int getListingsNumberCountry(String country) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT COUNT(*) AS COUNT FROM listings where country='%s'";
+        query = String.format(query,country);
+        ResultSet rs = stat.executeQuery(query);
 
+        if(rs.next()){
+            System.out.println(rs.getInt("COUNT"));
+        }
+        return rs.getInt("COUNT");
+    }
+    public int getListingsNumberCity(String country, String city) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT COUNT(*) AS COUNT FROM listings where city='%s' and country='%s'";
+        query = String.format(query, city, country);
+        ResultSet rs = stat.executeQuery(query);
+
+        if(rs.next()){
+            System.out.println(rs.getInt("COUNT"));
+        }
+        return rs.getInt("COUNT");
+    }
+    public void getListingsNumberPostal(String country, String city, String postal_code) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT COUNT(*) AS COUNT FROM listings where  city='%s' and country='%s and postal_code='%s'";
+        query = String.format(query, city, country, postal_code);
+        ResultSet rs = stat.executeQuery(query);
+        System.out.println(rs.toString());
+    }
+    public void listingsRankByCountry(String country) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "select oid,count(oid) as count from listings where country= '%s' group by oid order by count desc;";
+        query = String.format(query, country);
+        ResultSet rs = stat.executeQuery(query);
+        while(rs.next()){
+            System.out.println("oid:"+ rs.getLong("oid")+ " | count:"+rs.getLong("count"));
+        }
+    }
+    public void listingsRankByCity(String country, String city) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "select oid,count(oid) as count from listings where country= '%s' and city='%s' group by oid order by count desc;";
+        query = String.format(query, country, city);
+        ResultSet rs = stat.executeQuery(query);
+        while(rs.next()){
+            System.out.println("oid:"+ rs.getLong("oid")+ " | count:"+rs.getLong("count"));
+        }
+    }
+    public void rentersRankByPeriod(int rid, String start, String end) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "select rid,count(rid) as count from listings where country= '%s' and city='%s' group by rid order by count desc;";
+        query = String.format(query, start, end);
+        ResultSet rs = stat.executeQuery(query);
+        while(rs.next()){
+            System.out.println("oid:"+ rs.getLong("oid")+ " | count:"+rs.getLong("count"));
+        }
+    }
+    public void listingsOwnerMoreThanTenPersentByCountry(String country) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "select oid,count(oid) as count from listings where country= '%s' group by oid order by count desc;";
+        query = String.format(query, country);
+        ResultSet rs = stat.executeQuery(query);
+        int total = getListingsNumberCountry(country);
+        while(rs.next()){
+            double value = (double) rs.getLong("count")/total;
+            value = value*100;
+            if(value<10){
+                break;
+            }
+            System.out.println("oid:"+ rs.getLong("oid")+
+                    " | count:" +rs.getLong("count") +
+                    " | persentage:" + value + "%");
+        }
+    }
+    public void listingsOwnerMoreThanTenPersentByCity(String country) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "select oid,count(oid) as count from listings where country= '%s' group by oid order by count desc;";
+        query = String.format(query, country);
+        ResultSet rs = stat.executeQuery(query);
+        int total = getListingsNumberCountry(country);
+        while(rs.next()){
+            double value = (double) rs.getLong("count")/total;
+            value = value*100;
+            if(value<10){
+                break;
+            }
+            System.out.println("oid:"+ rs.getLong("oid")+
+                    " | count:" +rs.getLong("count") +
+                    " | persentage:" + value + "%");
+        }
+    }
 }
