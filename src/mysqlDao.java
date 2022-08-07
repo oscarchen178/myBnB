@@ -47,6 +47,7 @@ public class mysqlDao {
         // create new tables
         createUserTable();
         createListingTable();
+  //      pushData();
         createCalendarTable();
         createRentersTable();
         createRenterCommentTable();
@@ -55,6 +56,7 @@ public class mysqlDao {
         createBookingsTable();
         System.out.println("Tables create complete ~");
         // insert some data
+
         insertAccount("mail", "1111");
         insertUser(1,"Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
         insertRenter(1);
@@ -79,8 +81,24 @@ public class mysqlDao {
 //        insertHostComment(1, 1, "Hello", "1");
 //        editUserProfile(1, "qiqiqiqiqiqi", "wenzhou", "1997-01-01", "musician", 193382);
 //        editPayment(1,"credit", 38838,"11/28", 123);
-    }
+        listingsRankByCountry("Canada");
+        listingsRankByCity("Canada", "Scarborough");
+        getListingsNumberCountry("Canada");
+        listingsOwnerMoreThanTenPersentByCountry("Canada");
+        rentersRankByPeriod("2017-01-01", "2030-01-01");
 
+    }
+//    public void pushData() throws SQLException {
+//        Statement stat = conn.createStatement();
+//        String query = "LOAD DATA INFILE 'C:\\github\\myBnB\\src\\listings.csv'" +
+//                "INTO TABLE listings" +
+//                "FIELDS TERMINATED BY ',' " +
+//                "ENCLOSED BY '\"'" +
+//                "LINES TERMINATED BY '\\n'" +
+//                "IGNORE 1 ROWS;";
+//        stat.executeUpdate(query);
+//        System.out.println("pushdata");
+//    }
     private void createListingCommentTable() throws SQLException {
         Statement stat = conn.createStatement();
         String query = "CREATE TABLE listing_comments(" +
@@ -458,6 +476,59 @@ public class mysqlDao {
         query = String.format(query, lid);
         stat.executeUpdate(query);
     }
+    public int getBookingsNumberCityPeriod(String start, String end, String city) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT COUNT(*) AS COUNT FROM bookings natural join listings " +
+                "where Date(start) between '%s' and '%s' "+
+               "and" +
+                " Date(end) between '%s' and '%s'" +
+                " and city='%s'";
+        query = String.format(query,start, end, start, end, city);
+        ResultSet rs = stat.executeQuery(query);
+
+        if(rs.next()){
+            System.out.println(rs.getInt("COUNT"));
+        }
+        return rs.getInt("COUNT");
+    }
+    public int getBookingsNumberCityPostal(String start, String end, String city, String postal_code) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT COUNT(*) AS COUNT FROM bookings natural join listings " +
+                "where Date(start) between '%s' and '%s' "+
+                "and" +
+                " Date(end) between '%s' and '%s'" +
+                " and city='%s'" +
+                " and postal_code='%s'";
+        query = String.format(query,start, end, start, end, city,postal_code);
+        ResultSet rs = stat.executeQuery(query);
+
+        if(rs.next()){
+            System.out.println(rs.getInt("COUNT"));
+        }
+        return rs.getInt("COUNT");
+    }
+    public int getListingsNumberCountry(String country) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT COUNT(*) AS COUNT FROM listings where country='%s'";
+        query = String.format(query,country);
+        ResultSet rs = stat.executeQuery(query);
+
+        if(rs.next()){
+            System.out.println(rs.getInt("COUNT"));
+        }
+        return rs.getInt("COUNT");
+    }
+    public int getListingsNumberCity(String country, String city) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT COUNT(*) AS COUNT FROM listings where city='%s' and country='%s'";
+        query = String.format(query, city, country);
+        ResultSet rs = stat.executeQuery(query);
+        if(rs.next()){
+            System.out.println(rs.getInt("COUNT"));
+        }
+        return rs.getInt("COUNT");
+    }
+
 
     public void updateUser(int uid, String name, String address, String birthday, String occu, String sin) throws SQLException {
         Statement stat = conn.createStatement();
@@ -554,6 +625,126 @@ public class mysqlDao {
             return rs.getInt("rid");
         } else {
             return -1;
+        }
+    }
+
+
+    public void getListingsNumberPostal(String country, String city, String postal_code) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT COUNT(*) AS COUNT FROM listings " +
+                "where  city='%s' and country='%s and postal_code='%s'";
+        query = String.format(query, city, country, postal_code);
+        ResultSet rs = stat.executeQuery(query);
+        System.out.println(rs.toString());
+    }
+    public void listingsRankByCountry(String country) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "select oid,count(oid) as count from listings" +
+                " where country= '%s' group by oid order by count desc;";
+        query = String.format(query, country);
+        ResultSet rs = stat.executeQuery(query);
+        while(rs.next()){
+            System.out.println("oid:"+ rs.getLong("oid")+ " | count:"+rs.getLong("count"));
+        }
+    }
+    public void listingsRankByCity(String country, String city) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "select oid,count(oid) as count from listings " +
+                "where country= '%s' and city='%s' group by oid order by count desc;";
+        query = String.format(query, country, city);
+        ResultSet rs = stat.executeQuery(query);
+        while(rs.next()){
+            System.out.println("oid:"+ rs.getLong("oid")+ " | count:"+rs.getLong("count"));
+        }
+    }
+    public void rentersRankByPeriod(String start, String end) throws SQLException {
+        Statement stat = conn.createStatement();
+        System.out.println("------------------");
+        String query = "select rid,count(rid) as count from bookings " +
+                "where DATE(start) BETWEEN '%s' AND '%s' and DATE(end)" +
+                " BETWEEN '%s' AND '%s' and status=\"booked\" group by rid order by count desc;";
+        query = String.format(query, start, end, start, end);
+        ResultSet rs = stat.executeQuery(query);
+        while(rs.next()){
+            System.out.println("rid:"+ rs.getLong("rid")+ " | count:"+rs.getLong("count"));
+        }
+        System.out.println("----------------");
+    }
+    public void rentersRankByPeriodAndCity(String start, String end,String city) throws SQLException {
+        Statement stat = conn.createStatement();
+        System.out.println("------------------");
+        String query = "select rid,count(rid) as count from bookings natural join" +
+                " listings where DATE(start) BETWEEN '%s' AND '%s' " +
+                "and DATE(end) BETWEEN '%s' AND '%s' and city='%s'" +
+              //  "and count > 2" +
+                " group by rid order by count desc;";
+        query = String.format(query, start, end, start, end, city);
+        ResultSet rs = stat.executeQuery(query);
+        while(rs.next()){
+            System.out.println("rid:"+ rs.getLong("rid")+ " | count:"+rs.getLong("count"));
+        }
+        System.out.println("----------------");
+    }
+    public void rentersLargestCanceled() throws SQLException {
+        Statement stat = conn.createStatement();
+        System.out.println("------------------");
+        String query = "select rid,count(rid) as count from bookings natural join" +
+                " renters where status=\"canceled\"" +
+                " group by rid order by count desc;";
+        query = String.format(query);
+        ResultSet rs = stat.executeQuery(query);
+        while(rs.next()){
+            System.out.println("rid:"+ rs.getLong("rid")+ " | canceled count:"+rs.getLong("count"));
+        }
+        System.out.println("----------------");
+    }
+    public void hostsLargestCanceled() throws SQLException {
+        Statement stat = conn.createStatement();
+        System.out.println("------------------");
+        String query = "select oid,count(oid) as count from bookings natural join listings" +
+                " renters where status=\"canceled\"" +
+                " group by oid order by count desc;";
+        query = String.format(query);
+        ResultSet rs = stat.executeQuery(query);
+        while(rs.next()){
+            System.out.println("hid:"+ rs.getLong("oid")+ " | canceled count:"+rs.getLong("count"));
+        }
+        System.out.println("----------------");
+    }
+    public void listingsOwnerMoreThanTenPersentByCountry(String country) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "select oid,count(oid) as count from listings " +
+                "where country= '%s' group by oid order by count desc;";
+        query = String.format(query, country);
+        ResultSet rs = stat.executeQuery(query);
+        int total = getListingsNumberCountry(country);
+        while(rs.next()){
+            double value = (double) rs.getLong("count")/total;
+            value = value*100;
+            if(value<10){
+                break;
+            }
+            System.out.println("oid:"+ rs.getLong("oid")+
+                    " | count:" +rs.getLong("count") +
+                    " | persentage:" + value + "%");
+        }
+    }
+    public void listingsOwnerMoreThanTenPersentByCity(String country) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "select oid,count(oid) as count from listings " +
+                "where country= '%s' group by oid order by count desc;";
+        query = String.format(query, country);
+        ResultSet rs = stat.executeQuery(query);
+        int total = getListingsNumberCountry(country);
+        while(rs.next()){
+            double value = (double) rs.getLong("count")/total;
+            value = value*100;
+            if(value<10){
+                break;
+            }
+            System.out.println("oid:"+ rs.getLong("oid")+
+                    " | count:" +rs.getLong("count") +
+                    " | persentage:" + value + "%");
         }
     }
 
