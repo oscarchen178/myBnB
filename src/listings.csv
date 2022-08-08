@@ -1,14 +1,14 @@
 lid,oid,type,latitude,longitude,address,city,country,postal code,characteristics
 1,1,full house,20.84658,-6.10385,426 Luhi Glen,toronto,ca,T3K 1N9,Kitchen
-2,2,full house,13.16852,-77.56587,389 Ceko Square,toronto,ca,T3K 1N9,Free washer – In building
+2,2,full house,13.16852,-77.56587,389 Ceko Square,toronto,ca,T3K 1N9,Free washer – In building;Barbecue utensils
 3,2,room,-31.69889,98.56507,1830 Damwi Street,toronto,ca,T3K 1N9,Kitchen;Dishwasher
 4,2,full house,-41.01882,151.68584,100 Oble Boulevard,toronto,ca,G4X 1R5,Free washer – In building
-5,3,full house,87.79206,-96.50826,1582 Hipuf Ridge,ottawa,ca,R5H 2F6,Kitchen
+5,3,full house,87.79206,-96.50826,1582 Hipuf Ridge,ottawa,ca,R5H 2F6,Kitchen;Diswasher
 6,5,apartment,56.21356,0.3254,313 Foan Park,london,br,V4A 4I4,Luggage drop-off allowed
 7,6,room,1.45544,-140.68303,358 Bozhak Drive,london,br,V4A 4I4,Luggage drop-off allowed
-8,2,room,-31.69889,98.56507,1839 Damwi Street,toronto,ca,T3K 1N9,Security cameras on property
-9,5,full house,-31.69889,98.56507,1838 Damwi Street,toronto,ca,T3K 1N9,Dishwasher
+8,2,room,-31.69889,98.56507,1839 Damwi Street,toronto,ca,T3K 1N9,Security cameras on property;
+9,5,full house,-31.69889,98.56507,1838 Damwi Street,toronto,ca,T3K 1N9,Dishwasher;Ethernet connection
 10,4,apartment,-31.69889,98.56507,1831 Damwi Street,toronto,ca,T3K 1N9,Security cameras on property
-11,3,room,-31.69889,98.56507,1833 Damwi Street,toronto,ca,T3K 1N9,Dishwasher
+11,3,room,-31.69889,98.56507,1833 Damwi Street,toronto,ca,T3K 1N9,Dishwasher;Barbecue utensils
 12,5,full house,-31.69889,98.56507,1836 Damwi Street,toronto,ca,T3K 1N9,Security cameras on property
-13,2,apartment,-31.69889,98.56507,1830 Damwi Street,toronto,ca,T3K 1N9,Dishwasher
+13,2,apartment,-31.69889,98.56507,1830 Damwi Street,toronto,ca,T3K 1N9,Dishwasher;Barbecue utensils
