@@ -329,4 +329,35 @@ public class operation {
         }
     }
 
+    public String getPoPAmenity() {
+        try {
+            ResultSet rs = dao.getAllAmenities();
+            String all = "";
+            while (rs.next()) {
+                all += rs.getString("characteristics");
+                all += ";";
+            }
+            String[] arr = all.split(";");
+            if (arr.length < 1) return "";
+            int max = 0;
+            String res = "";
+            for (String x: arr) {
+                int count = 0;
+                for (String y: arr) {
+                    if (x.equals(y)) {
+                        count++;
+                    }
+                }
+                if (count > max) {
+                    max = count;
+                    res = x;
+                }
+            }
+            return res;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
 }

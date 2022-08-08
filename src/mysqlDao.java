@@ -871,5 +871,11 @@ public class mysqlDao {
         return 0;
     }
 
+    public ResultSet getAllAmenities() throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT characteristics FROM listings";
+        return stat.executeQuery(query);
+    }
+
 
 }

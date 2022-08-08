@@ -438,6 +438,7 @@ public class cmdHandler {
                 "'Shampoo', 'Ethernet connection', 'Air conditioning', 'Indoor fireplace: gas', " +
                 "'Security cameras on property', 'Dishwasher', 'Barbecue utensils'";
         System.out.println("Choose from: " + amenities);
+        System.out.println("Most popular amenity: " + op.getPoPAmenity());
         System.out.print("characteristics: ");
         String chara = getArgLine();
         op.createListing(this.uid, type, latitude, longitude, address, city, country, post, "('"+chara+"')");
