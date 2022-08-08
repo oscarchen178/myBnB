@@ -75,6 +75,8 @@ public class cmdHandler {
             manageHostsLargestCanceled();
         }else if (state == 28){
             manageRentersLargestCanceled();
+        }else if (state == 29){
+            manageCommentRank();
         }
 
 
@@ -561,6 +563,7 @@ public class cmdHandler {
                 "cancellations within a year");
         System.out.println("13, renters with the largest number of " +
                 "cancellations within a year");
+        System.out.println("14, popular noun phrases associated with the listing");
         System.out.print("Your choice: ");
         String[] arg = getArguments();
         if (arg[0].equals("1")) this.state = 16;
@@ -577,6 +580,7 @@ public class cmdHandler {
         else if (arg[0].equals("11")) this.state = 26;
         else if (arg[0].equals("12")) this.state = 27;
         else if (arg[0].equals("13")) this.state = 28;
+        else if (arg[0].equals("14")) this.state = 29;
 
         else System.out.println("Incorrect input!");
     }
@@ -781,6 +785,18 @@ public class cmdHandler {
         try {
             System.out.println("Result is:");
             dao.rentersLargestCanceled();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        getArgLine();
+        this.state=15;
+    }
+    public void manageCommentRank(){
+        System.out.println("14, popular noun phrases associated with the listing");
+
+        try {
+            System.out.println("Result is:");
+            dao.commentRank();
         }catch (Exception e) {
             e.printStackTrace();
         }

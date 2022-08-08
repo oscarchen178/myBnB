@@ -59,6 +59,7 @@ public class mysqlDao {
         System.out.println("Tables create complete ~");
         // insert some data
         pushData();
+
 //        insertAccount("mail", "1111");
 //        insertUser(7,"Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
 //        insertRenter(7);
@@ -767,6 +768,17 @@ public class mysqlDao {
                     " | persentage:" + value + "%");
         }
     }
+    public void commentRank() throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "select comment,count(comment) as count from listing_comments " +
+                " group by comment order by count desc;";
+        query = String.format(query);
+        ResultSet rs = stat.executeQuery(query);
+        while (rs.next()) {
+            System.out.println("comment:" + rs.getString("comment") + " | count:" + rs.getLong("count"));
+        }
+    }
+
 
     public ResultSet queryListing(String[] args) throws SQLException {
         Statement stat = conn.createStatement();
@@ -834,5 +846,8 @@ public class mysqlDao {
         System.out.println(query);
         return stat.executeQuery(query);
     }
+
+
+
 
 }
