@@ -1,9 +1,9 @@
 lid,oid,type,latitude,longitude,address,city,country,postal code,characteristics
-1,1,full house,20.84658,-6.10385,426 Luhi Glen,Ucsuvmuh,ER,T3K 1N9,Kitchen
-2,2,full house,13.16852,-77.56587,389 Ceko Square,Coztavso,BR,P1E 1C2,Free washer – In building
-3,2,room,-31.69889,98.56507,1830 Damwi Street,Ethoenu,SX,A1O 3X8,Kitchen
-4,3,full house,-41.01882,151.68584,100 Oble Boulevard,Cowomiuhi,NG,G4X 1R5,Free washer – In building
-5,4,full house,87.79206,-96.50826,1582 Hipuf Ridge,Goktujkon,PE,R5H 2F6,Kitchen
-6,5,apartment,56.21356,0.3254,313 Foan Park,Cahkobgit,IN,V4A 4I4,Luggage drop-off allowed
-7,6,room,1.45544,-140.68303,358 Bozhak Drive,Okokuawu,CD,H3L 7I1,Luggage drop-off allowed
+1,1,full house,20.84658,-6.10385,426 Luhi Glen,toronto,ca,T3K 1N9,Kitchen
+2,2,full house,13.16852,-77.56587,389 Ceko Square,toronto,ca,P1E 1C2,Free washer – In building
+3,2,room,-31.69889,98.56507,1830 Damwi Street,toronto,ca,A1O 3X8,Kitchen
+4,2,full house,-41.01882,151.68584,100 Oble Boulevard,toronto,ca,G4X 1R5,Free washer – In building
+5,3,full house,87.79206,-96.50826,1582 Hipuf Ridge,ottawa,ca,R5H 2F6,Kitchen
+6,5,apartment,56.21356,0.3254,313 Foan Park,london,br,V4A 4I4,Luggage drop-off allowed
+7,6,room,1.45544,-140.68303,358 Bozhak Drive,london,br,H3L 7I1,Luggage drop-off allowed
 
