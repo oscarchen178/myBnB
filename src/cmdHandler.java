@@ -134,7 +134,7 @@ public class cmdHandler {
     }
 
     public void register() {
-        System.out.println("Login ...");
+        System.out.println("Register ...");
         System.out.print("Email: ");
         String[] arg = getArguments();
         boolean exist = op.checkEmail(arg[0]);
@@ -366,7 +366,7 @@ public class cmdHandler {
             String end = getArgLine();
             op.book(this.uid, lid, start, end);
         }
-        this.state = 11;
+        this.state = 5;
     }
 
     public void managebooking() {
