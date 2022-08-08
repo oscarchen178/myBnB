@@ -3,6 +3,7 @@ import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class operation {
@@ -357,6 +358,34 @@ public class operation {
         } catch (Exception e) {
             e.printStackTrace();
             return "";
+        }
+    }
+
+    public void printPoPComment(int lid) {
+        try {
+            ResultSet rs = dao.getCmtOneListing(lid);
+            String all = "";
+            while (rs.next()) {
+                all += rs.getString("comment");
+                all += " ";
+            }
+            String[] arr = all.split(" ");
+
+            HashMap<String, Integer> map = new HashMap<>();
+//            ArrayList<Integer> outputArray = new ArrayList<>();
+
+            // Assign elements and their count in the map
+            for (String current : arr) {
+                int count = map.getOrDefault(current, 0);
+                map.put(current, count + 1);
+            }
+            int popular = map.size()/10;
+
+            for (String i : map.keySet()) {
+                if (map.get(i) >= popular) System.out.println("Word: " + i + " Count: " + map.get(i));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -803,13 +803,9 @@ public class cmdHandler {
     }
     public void manageCommentRank(){
         System.out.println("14, popular noun phrases associated with the listing");
-
-        try {
-            System.out.println("Result is:");
-            dao.commentRank();
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.print("Lid: ");
+        int lid = Integer.parseInt(getArgLine());
+        op.printPoPComment(lid);
         getArgLine();
         this.state=15;
     }

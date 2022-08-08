@@ -877,5 +877,12 @@ public class mysqlDao {
         return stat.executeQuery(query);
     }
 
+    public ResultSet getCmtOneListing(int lid) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT comment FROM listing_comments WHERE lid=%d";
+        query = String.format(query, lid);
+        return stat.executeQuery(query);
+    }
+
 
 }

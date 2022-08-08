@@ -6,3 +6,5 @@ out/production/myBnB/cmdHandler.class
 out/production/myBnB/listings.csv
 out/production/myBnB/mysqlDao.class
 out/production/myBnB/operation.class
+out/production/myBnB/operation.class
+*.class
