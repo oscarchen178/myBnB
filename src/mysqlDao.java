@@ -122,8 +122,8 @@ public class mysqlDao {
                 "lid INT, " +
                 "comment TEXT, " +
                 "rate varchar(1), " +
-                "foreign key (lid) references listings(lid), " +
-                "foreign key (rid) references renters(rid));";
+                "foreign key (lid) references listings(lid) ON DELETE CASCADE, " +
+                "foreign key (rid) references renters(rid) ON DELETE CASCADE);";
         stat.executeUpdate(query);
         System.out.println("++ created table: listing_comments");
     }
@@ -135,8 +135,8 @@ public class mysqlDao {
                 "rid INT, " +
                 "comment TEXT, " +
                 "rate varchar(1), " +
-                "foreign key (hid) references users(uid), " +
-                "foreign key (rid) references renters(rid));";
+                "foreign key (hid) references users(uid) ON DELETE CASCADE, " +
+                "foreign key (rid) references renters(rid) ON DELETE CASCADE);";
         stat.executeUpdate(query);
         System.out.println("++ created table: renter_comments");
     }
@@ -148,8 +148,8 @@ public class mysqlDao {
                 "hid INT, " +
                 "comment TEXT, " +
                 "rate varchar(1), " +
-                "foreign key (hid) references users(uid), " +
-                "foreign key (rid) references renters(rid));";
+                "foreign key (hid) references users(uid) ON DELETE CASCADE, " +
+                "foreign key (rid) references renters(rid) ON DELETE CASCADE);";
         stat.executeUpdate(query);
         System.out.println("++ created table: host_comments");
     }
@@ -163,7 +163,7 @@ public class mysqlDao {
                 "birthday DATE, " +
                 "occupation VARCHAR(30), " +
                 "sin INT, " +
-                "foreign key (uid) references accounts(aid));";
+                "foreign key (uid) references accounts(aid) ON DELETE CASCADE);";
         stat.executeUpdate(query);
         System.out.println("++ created table: users");
     }
@@ -204,7 +204,7 @@ public class mysqlDao {
 //                "characteristics SET(" + amenities + "), " +
                 "characteristics VARCHAR(300), " +
                 "PRIMARY KEY (lid), " +
-                "foreign key (oid) references users(uid));";
+                "foreign key (oid) references users(uid) ON DELETE CASCADE);";
         stat.executeUpdate(query);
         System.out.println("++ created table: listings");
     }
@@ -217,7 +217,7 @@ public class mysqlDao {
                 "card_num INT(16), " +
                 "expire VARCHAR(5), " +
                 "cvv INT(3), " +
-                "foreign key (rid) references users(uid));";
+                "foreign key (rid) references users(uid) ON DELETE CASCADE);";
         stat.executeUpdate(query);
         System.out.println("++ created table: renters");
     }
@@ -882,6 +882,13 @@ public class mysqlDao {
         String query = "SELECT comment FROM listing_comments WHERE lid=%d";
         query = String.format(query, lid);
         return stat.executeQuery(query);
+    }
+
+    public void deleteUsers(int uid) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "DELETE FROM accounts WHERE aid = %d";
+        query = String.format(query, uid);
+        stat.executeUpdate(query);
     }
 
 

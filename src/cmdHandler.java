@@ -176,6 +176,7 @@ public class cmdHandler {
         System.out.println("2, Host");
         System.out.println("3, Profile");
         System.out.println("4, Logout");
+        System.out.println("5, delete user");
         System.out.print("Your choice: ");
         String[] arg = getArguments();
         if (arg[0].equals("4")) {
@@ -193,6 +194,15 @@ public class cmdHandler {
         if (arg[0].equals("3")) {
             System.out.println("Go to Profile ...");
             this.state = 4;
+        }
+        if (arg[0].equals("5")) {
+            System.out.println("Type DELETE to confirm: ");
+            String input = getArgLine();
+            if (input.equals("DELETE")) {
+                System.out.println("Deleting ...");
+                op.deleteUser(this.uid);
+                this.state = 0;
+            }
         }
     }
 

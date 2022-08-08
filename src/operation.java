@@ -389,4 +389,12 @@ public class operation {
         }
     }
 
+    public void deleteUser(int uid) {
+        try {
+            dao.deleteUsers(uid);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
