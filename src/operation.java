@@ -298,4 +298,24 @@ public class operation {
         }
     }
 
+    public ArrayList<String> getFilteredListing(String[] args) {
+        try {
+            ArrayList<String> arr = new ArrayList<String>();
+            ResultSet rs = dao.queryListing(args);
+            while (rs.next()) {
+                String alist = rs.getString("lid") + ", " + rs.getString("oid") + ", " +
+                        rs.getString("date") + ", " + rs.getString("price") + ", " +
+                        rs.getString("type") + ", " + rs.getString("latitude") + ", " +
+                        rs.getString("longitude") + ", " + rs.getString("address") + ", " +
+                        rs.getString("city") + ", " + rs.getString("country") + ", " +
+                        rs.getString("postal_code") + ", " + rs.getString("characteristics");
+                arr.add(alist);
+            }
+            return arr;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

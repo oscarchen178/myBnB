@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.Objects;
 
 public class mysqlDao {
     private static final String dbURL = "jdbc:mysql://localhost:3306/mydb?allowLoadLocalInfile=true&SslMode=VerifyCA&SslMode=VerifyFull";
@@ -58,9 +59,9 @@ public class mysqlDao {
         System.out.println("Tables create complete ~");
         // insert some data
         pushData();
-//        insertAccount("mail", "1111");
-//        insertUser(1,"Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
-//        insertRenter(1);
+        insertAccount("mail", "1111");
+        insertUser(7,"Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
+        insertRenter(7);
 //
 //        insertAccount("mail2", "2222");
 //        insertUser(2,"Jason", "51 Brian Harrison", "2001-2-27", "student", 666666);
@@ -547,21 +548,21 @@ public class mysqlDao {
     public void updateUser(int uid, String name, String address, String birthday, String occu, String sin) throws SQLException {
         Statement stat = conn.createStatement();
         String query = "UPDATE users SET ";
-        if (name != "") query += ("name = '" + name + "'");
-        if (address != "") {
-            if (name != "") query += ", ";
+        if (!name.equals("")) query += ("name = '" + name + "'");
+        if (!address.equals("")) {
+            if (!name.equals("")) query += ", ";
             query += ("address = '" + address + "'");
         }
-        if (birthday != "") {
-            if (name != "" || address != "") query += ", ";
+        if (!birthday.equals("")) {
+            if (!name.equals("") || !address.equals("")) query += ", ";
             query += ("birthday = '" + birthday + "'");
         }
-        if (occu != "") {
-            if (name != "" || address != "" || birthday != "") query += ", ";
+        if (!occu.equals("")) {
+            if (!name.equals("") || !address.equals("") || !birthday.equals("")) query += ", ";
             query += ("occu = '" + occu + "'");
         }
-        if (sin != "") {
-            if (name != "" || address != "" || birthday != "" || occu != "") query += ", ";
+        if (!sin.equals("")) {
+            if (!name.equals("") || !address.equals("") || !birthday.equals("") || !occu.equals("")) query += ", ";
             query += ("sin = " + sin);
         }
 
@@ -765,6 +766,53 @@ public class mysqlDao {
                     " | count:" +rs.getLong("count") +
                     " | persentage:" + value + "%");
         }
+    }
+
+    public ResultSet queryListing(String[] args) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT * FROM calendars natural join listings WHERE available=true";
+        if (args[0] != null && args[1] != null && !args[0].equals("") && !args[1].equals("")) {
+            String condition = " AND SQRT((latitude - %s)*(latitude - %s)+(longitude - %s)*(longitude - %s)) < %s";
+            query += String.format(condition, args[0], args[0], args[1], args[1], args[2]);
+        }
+        if (args[3] != null && !args[3].equals("")) {
+            String condition = " AND LEFT(postal_code , 3) = '%s'";
+            query += String.format(condition, args[3].substring(0, 3));
+        }
+        if (args[4] != null && !args[4].equals("")) {
+            String condition = " AND price >= %s";
+            query += String.format(condition, args[4]);
+        }
+        if (args[5] != null && !args[5].equals("")) {
+            String condition = " AND price <= %s";
+            query += String.format(condition, args[5]);
+        }
+        if (args[6] != null && !args[6].equals("")) {
+            String condition = " AND DATE(date) >= '%s'";
+            query += String.format(condition, args[6]);
+        }
+        if (args[7] != null && !args[7].equals("")) {
+            String condition = " AND DATE(date) <= '%s'";
+            query += String.format(condition, args[7]);
+        }
+        if (args[8] != null && !args[8].equals("")) {
+            String condition = " AND address = '%s'";
+            query += String.format(condition, args[8]);
+        }
+        if (args[9] != null && !args[9].equals("")) {
+            String condition = " AND city = '%s'";
+            query += String.format(condition, args[9]);
+        }
+        if (args[10] != null && !args[10].equals("")) {
+            String condition = " AND country = '%s'";
+            query += String.format(condition, args[10]);
+        }
+        if (args[11] != null && !args[11].equals("")) {
+            String condition = " AND type = '%s'";
+            query += String.format(condition, args[11]);
+        }
+        System.out.println(query);
+        return stat.executeQuery(query);
     }
 
 }

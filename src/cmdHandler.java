@@ -278,41 +278,56 @@ public class cmdHandler {
         System.out.println("3, price range");
         System.out.println("4, date range");
         System.out.println("5, address city country");
+        System.out.println("6, type");
         System.out.println("Choose the filters you want to use ~");
         System.out.print("(Separate By Space): ");
         String[] args = getArguments();
+        String[] data = new String[12];
         for (String arg: args) {
             if (arg.equals("1")) {
                 System.out.print("latitude: ");
-                String lat = getArgLine();
+                data[0] = getArgLine();
                 System.out.print("longitude: ");
-                String lon = getArgLine();
+                data[1] = getArgLine();
                 System.out.print("radius: ");
-                String r = getArgLine();
-                if (r.equals("")) {
-                    r = "10";
+                data[2] = getArgLine();
+                if (data[2].equals("")) {
+                    data[2] = "10";
                 }
             }
             if (arg.equals("2")) {
                 System.out.print("Postal Code: ");
-                String post = getArgLine();
+                data[3] = getArgLine();
             }
             if (arg.equals("3")) {
                 System.out.print("Low: ");
-                String low = getArgLine();
+                data[4] = getArgLine();
                 System.out.print("High: ");
-                String high = getArgLine();
+                data[5] = getArgLine();
             }
             if (arg.equals("4")) {
                 System.out.print("Start: ");
-                String start = getArgLine();
+                data[6] = getArgLine();
                 System.out.print("End: ");
-                String end = getArgLine();
+                data[7] = getArgLine();
             }
             if (arg.equals("5")) {
-                System.out.print("Postal Code: ");
-                String post = getArgLine();
+                System.out.print("Address: ");
+                data[8] = getArgLine();
+                System.out.print("City: ");
+                data[9] = getArgLine();
+                System.out.print("Country: ");
+                data[10] = getArgLine();
             }
+            if (arg.equals("6")) {
+                System.out.print("Type: ");
+                data[11] = getArgLine();
+            }
+        }
+        System.out.println("Results");
+        ArrayList<String> listings = op.getFilteredListing(data);
+        for (String listing : listings) {
+            System.out.println(listing);
         }
     }
 
