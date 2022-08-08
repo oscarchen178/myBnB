@@ -59,9 +59,9 @@ public class mysqlDao {
         System.out.println("Tables create complete ~");
         // insert some data
         pushData();
-        insertAccount("mail", "1111");
-        insertUser(7,"Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
-        insertRenter(7);
+//        insertAccount("mail", "1111");
+//        insertUser(7,"Oscar", "50 Brian Harrison", "2001-2-27", "student", 666666);
+//        insertRenter(7);
 //
 //        insertAccount("mail2", "2222");
 //        insertUser(2,"Jason", "51 Brian Harrison", "2001-2-27", "student", 666666);
@@ -810,6 +810,26 @@ public class mysqlDao {
         if (args[11] != null && !args[11].equals("")) {
             String condition = " AND type = '%s'";
             query += String.format(condition, args[11]);
+        }
+        if (args[12] != null && !args[12].equals("") ) {
+            String condition = "";
+            if (args[12].equals("1") && args[0] != null &&
+                    args[1] != null && !args[0].equals("") && !args[1].equals("")) {
+                condition = " ORDER BY SQRT((latitude - %s)*(latitude - %s)+(longitude - %s)*(longitude - %s))";
+                condition = String.format(condition, args[0], args[0], args[1], args[1], args[2]);
+            } else if (args[12].equals("2")){
+                condition = " ORDER BY price";
+            }
+            query += condition;
+        }
+        if (args[13] != null && !args[13].equals("")) {
+            String condition = "";
+            if (args[13].equals("1")) {
+                condition = " ASC";
+            } else if (args[13].equals("2")) {
+                condition = " DESC";
+            }
+            query += condition;
         }
         System.out.println(query);
         return stat.executeQuery(query);

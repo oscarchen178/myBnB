@@ -282,7 +282,7 @@ public class cmdHandler {
         System.out.println("Choose the filters you want to use ~");
         System.out.print("(Separate By Space): ");
         String[] args = getArguments();
-        String[] data = new String[12];
+        String[] data = new String[14];
         for (String arg: args) {
             if (arg.equals("1")) {
                 System.out.print("latitude: ");
@@ -324,11 +324,37 @@ public class cmdHandler {
                 data[11] = getArgLine();
             }
         }
-        System.out.println("Results");
+        System.out.println("Rank By: 1, location  2, price");
+        System.out.print("1, Ascending  2, Descending: ");
+        String[] acd = getArguments();
+        if (acd.length == 2) {
+            data[12] = acd[0];
+            data[13] = acd[1];
+        }
+        System.out.println("Results:");
         ArrayList<String> listings = op.getFilteredListing(data);
         for (String listing : listings) {
             System.out.println(listing);
         }
+        System.out.print("Book (yes/no) ?: ");
+        String input = getArgLine();
+        if (input.equals("yes")) {
+            System.out.println("lid: ");
+            String lidStr = getArgLine();
+            int lid;
+            try {
+                lid = Integer.parseInt(lidStr);
+            } catch (Exception e) {
+                System.out.println("Wrong input");
+                return;
+            }
+            System.out.print("Start Date: ");
+            String start = getArgLine();
+            System.out.print("End Date: ");
+            String end = getArgLine();
+            op.book(this.uid, lid, start, end);
+        }
+        this.state = 11;
     }
 
     public void managebooking() {
