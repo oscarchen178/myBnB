@@ -201,7 +201,8 @@ public class mysqlDao {
                 "city VARCHAR(20), " +
                 "country VARCHAR(20), " +
                 "postal_code VARCHAR(10), " +
-                "characteristics SET(" + amenities + "), " +
+//                "characteristics SET(" + amenities + "), " +
+                "characteristics VARCHAR(300), " +
                 "PRIMARY KEY (lid), " +
                 "foreign key (oid) references users(uid));";
         stat.executeUpdate(query);
@@ -848,6 +849,27 @@ public class mysqlDao {
     }
 
 
+    public String getCityByLid(int lid) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT city FROM listings WHERE lid=%d";
+        query = String.format(query, lid);
+        ResultSet rs = stat.executeQuery(query);
+        if (rs.next()) {
+            return rs.getString("city");
+        }
+        return null;
+    }
+
+    public int getCityAvg(String city) throws SQLException {
+        Statement stat = conn.createStatement();
+        String query = "SELECT AVG(price) AS avg FROM calendars natural join listings WHERE city='%s'";
+        query = String.format(query, city);
+        ResultSet rs = stat.executeQuery(query);
+        if (rs.next()) {
+            return rs.getInt("avg");
+        }
+        return 0;
+    }
 
 
 }

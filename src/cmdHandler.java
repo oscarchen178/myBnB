@@ -468,8 +468,11 @@ public class cmdHandler {
             System.out.println("Edit Price");
             System.out.print("Date: ");
             String date = getArgLine();
+            System.out.println("Suggested Price: " + op.getSuggestedPrice(lid));
             System.out.print("Price: ");
             String price = getArgLine();
+            if (date.equals("")) return;
+            if (price.equals("")) return;
             op.changeCalendarPrice(lid, Integer.parseInt(price), date);
         }
         if (input.equals("2")) {
@@ -477,10 +480,14 @@ public class cmdHandler {
             System.out.println("Insert new date to Calendar");
             System.out.print("Date: ");
             String date = getArgLine();
+            System.out.println("Suggested Price: " + op.getSuggestedPrice(lid));
             System.out.print("Price: ");
             String price = getArgLine();
             System.out.print("Available: ");
             String ava = getArgLine();
+            if (date.equals("")) return;
+            if (price.equals("")) return;
+            if (ava.equals("")) return;
             op.insertNewDate(lid, date, Integer.parseInt(price), ava);
         }
         if (input.equals("3")) {
@@ -490,6 +497,8 @@ public class cmdHandler {
             String date = getArgLine();
             System.out.print("Available: ");
             String ava = getArgLine();
+            if (date.equals("")) return;
+            if (ava.equals("")) return;
             op.changeCalendarAvailable(lid, ava, date);
         }
         if (input.equals("4")) {

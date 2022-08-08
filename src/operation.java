@@ -318,4 +318,15 @@ public class operation {
         }
     }
 
+    public int getSuggestedPrice(int lid) {
+        try {
+            String city = dao.getCityByLid(lid);
+            if (city == null) return 0;
+            return dao.getCityAvg(city);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
 }
